@@ -11,7 +11,7 @@ func GenerateClient(doc *Document, typesImportPath string) string {
 
 	writeClientImports(&b, doc, typesImportPath)
 	b.WriteString("\n")
-	writeApiError(&b)
+	writeApiError(&b, errorClassName(doc))
 	b.WriteString("\n")
 	writeClientClass(&b, doc)
 
@@ -75,14 +75,13 @@ func sortStrings(s []string) {
 	}
 }
 
-func writeApiError(b *strings.Builder) {
-	b.WriteString(`export class ApiError extends Error {
-  statusCode: number;
+func writeApiError(b *strings.Builder, name string) {
+	b.WriteString("export class " + name + " extends Error {\n" + `  statusCode: number;
   body: string;
 
   constructor(statusCode: number, body: string) {
     super(` + "`API error ${statusCode}: ${body}`" + `);
-    this.name = "ApiError";
+    this.name = "` + name + `";
     this.statusCode = statusCode;
     this.body = body;
   }
@@ -101,18 +100,19 @@ func writeClientClass(b *strings.Builder, doc *Document) {
   }
 `)
 
+	errName := errorClassName(doc)
 	used := map[string]int{}
 	for _, pe := range doc.Paths {
 		for _, op := range pe.Operations {
 			b.WriteString("\n")
-			writeClientMethod(b, pe.Path, op, used)
+			writeClientMethod(b, pe.Path, op, used, errName)
 		}
 	}
 
 	b.WriteString("}\n")
 }
 
-func writeClientMethod(b *strings.Builder, path string, op Operation, used map[string]int) {
+func writeClientMethod(b *strings.Builder, path string, op Operation, used map[string]int, errName string) {
 	funcName := operationFuncName(op, path)
 	// Two operations can map to the same method name (missing operationId, or
 	// ids that differ only in punctuation): keep the first, number the others.
@@ -152,7 +152,7 @@ func writeClientMethod(b *strings.Builder, path string, op Operation, used map[s
 
 	b.WriteString("    if (!resp.ok) {\n")
 	b.WriteString("      const body = await resp.text();\n")
-	b.WriteString("      throw new ApiError(resp.status, body);\n")
+	b.WriteString("      throw new " + errName + "(resp.status, body);\n")
 	b.WriteString("    }\n")
 
 	if returnType != "" {
@@ -167,11 +167,11 @@ func buildTsSignature(funcName string, pathParams, queryParams []tsParamInfo, ha
 	for _, p := range pathParams {
 		params = append(params, fmt.Sprintf("%s: %s", p.tsName, p.tsType))
 	}
-	for _, p := range queryParams {
-		params = append(params, fmt.Sprintf("%s?: %s", p.tsName, p.tsType))
-	}
 	if hasBody && bodyType != "" {
 		params = append(params, fmt.Sprintf("body: %s", bodyType))
+	}
+	for _, p := range queryParams {
+		params = append(params, fmt.Sprintf("%s?: %s", p.tsName, p.tsType))
 	}
 
 	ret := "Promise<void>"
@@ -323,4 +323,18 @@ func requestBodyType(op Operation) string {
 		return tsTypeName(refToTypeName(op.RequestBody.Ref))
 	}
 	return ""
+}
+
+// errorClassName is the name of the client's error class. It is ApiError unless
+// a schema the client imports has that name (the import would clash with the class).
+func errorClassName(doc *Document) string {
+	taken := map[string]bool{}
+	for _, name := range collectReferencedTypes(doc) {
+		taken[name] = true
+	}
+	name := "ApiError"
+	for taken[name] {
+		name = "Client" + name
+	}
+	return name
 }

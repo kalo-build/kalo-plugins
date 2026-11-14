@@ -1,5 +1,7 @@
 package generate
 
+import "io"
+
 type Config struct {
 	InputDir        string
 	OutputDir       string
@@ -7,6 +9,9 @@ type Config struct {
 	GenerateTypes   bool
 	GenerateClient  bool
 	TypesImportPath string
+
+	// Warn receives one-line warnings (nil: none).
+	Warn io.Writer
 }
 
 func (c *Config) Resolve() {

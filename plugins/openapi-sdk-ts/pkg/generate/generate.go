@@ -26,6 +26,9 @@ func GenerateSDK(cfg Config) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse OpenAPI spec: %w", err)
 	}
+	if err := CheckRefs(doc); err != nil {
+		return err
+	}
 
 	if err := os.MkdirAll(cfg.OutputDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)

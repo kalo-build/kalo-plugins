@@ -11,14 +11,17 @@ func GenerateTypes(doc *Document) string {
 
 	first := true
 	for _, ns := range doc.Schemas {
-		if !ns.Schema.HasType("object") {
-			continue
-		}
 		if !first {
 			b.WriteString("\n")
 		}
 		first = false
-		writeInterfaceType(&b, ns.Name, ns.Schema)
+		if ns.Schema.HasType("object") || (len(ns.Schema.Types) == 0 && len(ns.Schema.Properties) > 0) {
+			writeInterfaceType(&b, ns.Name, ns.Schema)
+		} else {
+			// Non-object component schemas (arrays, strings, numbers, enums, unions)
+			// become type aliases so that every $ref resolves.
+			b.WriteString(fmt.Sprintf("export type %s = %s;\n", tsTypeName(ns.Name), schemaToTsType(ns.Schema)))
+		}
 	}
 
 	return b.String()
@@ -34,9 +37,9 @@ func writeInterfaceType(b *strings.Builder, name string, schema Schema) {
 		isReadOnly := prop.Schema.ReadOnly
 
 		if isRequired || isReadOnly {
-			b.WriteString(fmt.Sprintf("  %s: %s;\n", prop.Name, tsType))
+			b.WriteString(fmt.Sprintf("  %s: %s;\n", tsPropName(prop.Name), tsType))
 		} else {
-			b.WriteString(fmt.Sprintf("  %s?: %s;\n", prop.Name, tsType))
+			b.WriteString(fmt.Sprintf("  %s?: %s;\n", tsPropName(prop.Name), tsType))
 		}
 	}
 

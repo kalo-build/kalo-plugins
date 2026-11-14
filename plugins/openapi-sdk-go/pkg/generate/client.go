@@ -46,12 +46,26 @@ func collectClientImports(doc *Document) []string {
 	if hasRequestBodies(doc) {
 		imps["bytes"] = true
 	}
+	if !hasQueryParams(doc) {
+		delete(imps, "net/url") // an unused import is a compile error
+	}
 	sorted := make([]string, 0, len(imps))
 	for imp := range imps {
 		sorted = append(sorted, imp)
 	}
 	sort.Strings(sorted)
 	return sorted
+}
+
+func hasQueryParams(doc *Document) bool {
+	for _, pe := range doc.Paths {
+		for _, op := range pe.Operations {
+			if len(extractQueryParams(op)) > 0 {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func hasRequestBodies(doc *Document) bool {
@@ -92,21 +106,31 @@ func writeClientStruct(b *strings.Builder) {
 }
 
 func writeClientOperations(b *strings.Builder, doc *Document) {
+	used := map[string]int{}
 	for _, pe := range doc.Paths {
 		for _, op := range pe.Operations {
 			b.WriteString("\n")
-			writeOperation(b, pe.Path, op)
+			writeOperation(b, pe.Path, op, used)
 		}
 	}
 }
 
-func writeOperation(b *strings.Builder, path string, op Operation) {
+func writeOperation(b *strings.Builder, path string, op Operation, used map[string]int) {
 	funcName := operationFuncName(op, path)
+	// Two operations can map to one method name (missing operationId, or ids that
+	// differ only in punctuation): keep the first, number the others.
+	if n := used[funcName]; n > 0 {
+		used[funcName] = n + 1
+		funcName = fmt.Sprintf("%s%d", funcName, n+1)
+	} else {
+		used[funcName] = 1
+	}
 	returnType := operationReturnType(op)
 	hasBody := op.Method == "POST" || op.Method == "PUT" || op.Method == "PATCH"
 	bodyType := requestBodyType(op)
 	pathParams := extractPathParams(op)
 	queryParams := extractQueryParams(op)
+	dedupeParamNames(pathParams, queryParams)
 
 	sig := buildSignature(funcName, pathParams, queryParams, hasBody, bodyType, returnType)
 	b.WriteString(fmt.Sprintf("// %s calls %s %s.\n", funcName, op.Method, path))
@@ -249,7 +273,7 @@ func extractPathParams(op Operation) []paramInfo {
 			}
 			params = append(params, paramInfo{
 				name:   p.Name,
-				goName: toCamelCase(p.Name),
+				goName: goSafeLocal(toCamelCase(p.Name)),
 				goType: goType,
 			})
 		}
@@ -263,7 +287,7 @@ func extractQueryParams(op Operation) []paramInfo {
 		if p.In == "query" {
 			params = append(params, paramInfo{
 				name:   p.Name,
-				goName: toCamelCase(p.Name),
+				goName: goSafeLocal(toCamelCase(p.Name)),
 				goType: "string",
 			})
 		}
@@ -273,14 +297,31 @@ func extractQueryParams(op Operation) []paramInfo {
 
 func operationFuncName(op Operation, path string) string {
 	if op.OperationID != "" {
-		return toPascalCase(op.OperationID)
+		return goSafeExported(toPascalCase(op.OperationID))
 	}
 	parts := strings.Split(strings.Trim(path, "/"), "/")
 	resource := ""
 	if len(parts) > 0 {
 		resource = toPascalCase(parts[len(parts)-1])
 	}
-	return methodPrefix(op.Method) + resource
+	return goSafeExported(methodPrefix(op.Method) + resource)
+}
+
+// dedupeParamNames renames parameters whose Go names collide inside one method.
+func dedupeParamNames(path, query []paramInfo) {
+	seen := map[string]bool{}
+	for i := range path {
+		for seen[path[i].goName] {
+			path[i].goName += "_"
+		}
+		seen[path[i].goName] = true
+	}
+	for i := range query {
+		for seen[query[i].goName] {
+			query[i].goName += "_"
+		}
+		seen[query[i].goName] = true
+	}
 }
 
 func methodPrefix(method string) string {

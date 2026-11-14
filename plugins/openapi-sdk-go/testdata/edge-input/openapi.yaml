@@ -1,0 +1,104 @@
+openapi: "3.0.3"
+info:
+  title: Edge API
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: new
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pets'
+  /meta/root:
+    get:
+      operationId: meta/root
+      responses:
+        "200":
+          description: Root
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-overview'
+  /orgs/{org-name}/cache-usage:
+    get:
+      operationId: actions-cache-list
+      parameters:
+        - name: org-name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: 2fa
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /status:
+    get:
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-overview'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    Pet:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tag:
+          type: string
+    Pets:
+      type: array
+      items:
+        $ref: '#/components/schemas/Pet'
+    Status:
+      type: string
+      enum: [ok, degraded]
+    api-overview:
+      type: object
+      properties:
+        verifiable_password_authentication:
+          type: boolean
+        ssh-key-fingerprints:
+          type: object
+        "x/y":
+          type: string

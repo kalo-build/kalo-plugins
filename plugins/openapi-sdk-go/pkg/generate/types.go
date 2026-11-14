@@ -18,13 +18,18 @@ func GenerateTypes(doc *Document, packageName string) (string, error) {
 	}
 
 	for i, ns := range doc.Schemas {
-		if !ns.Schema.HasType("object") {
-			continue
-		}
 		if i > 0 {
 			b.WriteString("\n")
 		}
-		writeStructType(&b, ns.Name, ns.Schema)
+		if ns.Schema.HasType("object") || (len(ns.Schema.Types) == 0 && len(ns.Schema.Properties) > 0) {
+			writeStructType(&b, ns.Name, ns.Schema)
+		} else {
+			// Non-object component schemas (arrays, strings, numbers, enums, unions)
+			// become defined types so that every $ref resolves.
+			tn := goTypeName(ns.Name)
+			b.WriteString(fmt.Sprintf("// %s represents the %s schema.\n", tn, ns.Name))
+			b.WriteString(fmt.Sprintf("type %s %s\n", tn, schemaToGoType(ns.Schema)))
+		}
 	}
 
 	return formatGoSource(b.String())
@@ -35,8 +40,13 @@ func writeStructType(b *strings.Builder, name string, schema Schema) {
 	b.WriteString(fmt.Sprintf("// %s represents the %s schema.\n", typeName, name))
 	b.WriteString(fmt.Sprintf("type %s struct {\n", typeName))
 
+	seenFields := map[string]bool{}
 	for _, prop := range schema.Properties {
-		goName := toPascalCase(prop.Name)
+		goName := goSafeExported(toPascalCase(prop.Name))
+		for seenFields[goName] {
+			goName += "_"
+		}
+		seenFields[goName] = true
 		goType := resolveGoType(prop)
 		jsonTag := prop.Name
 

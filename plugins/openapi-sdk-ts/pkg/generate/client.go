@@ -101,23 +101,33 @@ func writeClientClass(b *strings.Builder, doc *Document) {
   }
 `)
 
+	used := map[string]int{}
 	for _, pe := range doc.Paths {
 		for _, op := range pe.Operations {
 			b.WriteString("\n")
-			writeClientMethod(b, pe.Path, op)
+			writeClientMethod(b, pe.Path, op, used)
 		}
 	}
 
 	b.WriteString("}\n")
 }
 
-func writeClientMethod(b *strings.Builder, path string, op Operation) {
+func writeClientMethod(b *strings.Builder, path string, op Operation, used map[string]int) {
 	funcName := operationFuncName(op, path)
+	// Two operations can map to the same method name (missing operationId, or
+	// ids that differ only in punctuation): keep the first, number the others.
+	if n := used[funcName]; n > 0 {
+		used[funcName] = n + 1
+		funcName = fmt.Sprintf("%s%d", funcName, n+1)
+	} else {
+		used[funcName] = 1
+	}
 	returnType := operationReturnType(op)
 	hasBody := op.Method == "POST" || op.Method == "PUT" || op.Method == "PATCH"
 	bodyType := requestBodyType(op)
 	pathParams := extractPathParams(op)
 	queryParams := extractQueryParams(op)
+	dedupeParamNames(pathParams, queryParams)
 
 	sig := buildTsSignature(funcName, pathParams, queryParams, hasBody, bodyType, returnType)
 	b.WriteString(sig)
@@ -209,7 +219,7 @@ func extractPathParams(op Operation) []tsParamInfo {
 			}
 			params = append(params, tsParamInfo{
 				name:   p.Name,
-				tsName: toCamelCase(p.Name),
+				tsName: tsSafeName(toCamelCase(p.Name)),
 				tsType: tsType,
 			})
 		}
@@ -223,7 +233,7 @@ func extractQueryParams(op Operation) []tsParamInfo {
 		if p.In == "query" {
 			params = append(params, tsParamInfo{
 				name:   p.Name,
-				tsName: toCamelCase(p.Name),
+				tsName: tsSafeName(toCamelCase(p.Name)),
 				tsType: "string",
 			})
 		}
@@ -233,14 +243,31 @@ func extractQueryParams(op Operation) []tsParamInfo {
 
 func operationFuncName(op Operation, path string) string {
 	if op.OperationID != "" {
-		return toCamelCase(op.OperationID)
+		return tsSafeName(toCamelCase(op.OperationID))
 	}
 	parts := strings.Split(strings.Trim(path, "/"), "/")
 	resource := ""
 	if len(parts) > 0 {
 		resource = toPascalCase(parts[len(parts)-1])
 	}
-	return toCamelCase(methodPrefix(op.Method) + resource)
+	return tsSafeName(toCamelCase(methodPrefix(op.Method) + resource))
+}
+
+// dedupeParamNames renames parameters whose TypeScript names collide inside one method.
+func dedupeParamNames(path, query []tsParamInfo) {
+	seen := map[string]bool{}
+	for i := range path {
+		for seen[path[i].tsName] {
+			path[i].tsName += "_"
+		}
+		seen[path[i].tsName] = true
+	}
+	for i := range query {
+		for seen[query[i].tsName] {
+			query[i].tsName += "_"
+		}
+		seen[query[i].tsName] = true
+	}
 }
 
 func methodPrefix(method string) string {

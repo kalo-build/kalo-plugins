@@ -1,5 +1,5 @@
 name: openapi-sdk
-version: 0.1.0
+version: 0.1.1
 description: OpenAPI file in, TypeScript and Go SDKs out (technical preview, built by an AI agent acting for Kalo Software GmbH).
 catalog: descriptors
 input: {from: KALOX:OPENAPI@1:YAML@1, accept: ["*.yaml", "*.yml", "*.json"]}

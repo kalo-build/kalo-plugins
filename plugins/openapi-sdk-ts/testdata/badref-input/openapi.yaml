@@ -1,0 +1,58 @@
+openapi: "3.0.3"
+info:
+  title: Paths-only refs
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      responses:
+        "200":
+          description: A list of pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+  /pets/{id}:
+    get:
+      operationId: getPet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: One pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/paths/~1pets/get/responses/200/content/application~1json/schema/items'
+    put:
+      operationId: putPet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/paths/~1pets/get/responses/200/content/application~1json/schema/items'
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/paths/~1pets/get/responses/200/content/application~1json/schema/items'

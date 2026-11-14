@@ -29,5 +29,6 @@ WASM files land in `dist/wasm/`.
 | Plugin | What it does | From |
 |---|---|---|
 | [`openapi-sdk-ts`](plugins/openapi-sdk-ts) | OpenAPI 3.1 YAML → typed TypeScript HTTP client | `kalo-build/plugin-openapi-sdk-ts@7d36150` |
+| [`openapi-sdk-go`](plugins/openapi-sdk-go) | OpenAPI 3.1 YAML → typed Go HTTP client | `kalo-build/plugin-openapi-sdk-go@d177032` |
 
 Adding a plugin or a recipe: [CONTRIBUTING.md](CONTRIBUTING.md). Licence: MIT.

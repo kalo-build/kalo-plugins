@@ -1,0 +1,37 @@
+name: "@kalo-build/plugin-openapi-sdk-go"
+displayName: "OpenAPI Go SDK"
+description: "Generates a typed Go HTTP client SDK from an OpenAPI 3.1 specification using kin-openapi."
+version: "1.0.0"
+
+input:
+  format: "KA:OA1:YAML1"
+  description: "OpenAPI 3.1 YAML specification"
+  suggestedStore:
+    name: "KA_OA_YAML"
+    type: "localFileSystem"
+    path: "./docs/openapi"
+
+output:
+  format: "KA:OA1:GO_CLIENT1"
+  description: "Generated Go HTTP client source files"
+  suggestedStore:
+    name: "KA_OA_GO_CLIENT"
+    type: "localFileSystem"
+    path: "./generated/client"
+
+configSchema:
+  specFileName:
+    type: string
+    description: "Name of the OpenAPI spec file to read (default: openapi.yaml)"
+  packageName:
+    type: string
+    description: "Go package name for generated code (default: client)"
+  packagePath:
+    type: string
+    description: "Full Go import path for the generated package"
+  generateTypes:
+    type: boolean
+    description: "Generate request/response type definitions (default: true)"
+  generateClient:
+    type: boolean
+    description: "Generate typed HTTP client (default: true)"

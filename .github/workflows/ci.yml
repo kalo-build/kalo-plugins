@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['recipe-*']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: '1.24.x'
+          cache-dependency-path: plugins/*/go.sum
+      - name: Build and test every plugin
+        run: scripts/ci.sh
+      - name: Build kalo from the pinned kalo-cli commit
+        run: |
+          KALO_CLI_REF="$(cat scripts/kalo-cli-ref 2>/dev/null || echo agent-main)"
+          echo "kalo-cli ref: $KALO_CLI_REF"
+          git clone --filter=blob:none https://github.com/kalo-build/kalo-cli "$RUNNER_TEMP/kalo-cli"
+          git -C "$RUNNER_TEMP/kalo-cli" checkout "$KALO_CLI_REF"
+          (cd "$RUNNER_TEMP/kalo-cli" && go build -o "$RUNNER_TEMP/kalo" ./cmd/kalo)
+          echo "KALO=$RUNNER_TEMP/kalo" >> "$GITHUB_ENV"
+      - name: Pack, validate and run every recipe
+        run: |
+          for r in recipes/*/recipe.yaml; do
+            [ -f "$r" ] || { echo "no recipes yet"; break; }
+            scripts/pack-recipe.sh "$(basename "$(dirname "$r")")"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/recipe-')
+    needs: build-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Attach recipe tarball to a pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --prerelease \
+            --title "$TAG" --notes "Recipe $TAG (technical preview). Built by AI agents acting for Kalo Software GmbH." \
+            dist/recipes/"$TAG".tar.gz dist/recipes/"$TAG".tar.gz.sha256

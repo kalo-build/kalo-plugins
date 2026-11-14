@@ -21,6 +21,7 @@ func GenerateSDK(cfg Config) error {
 		return fmt.Errorf("failed to read spec file '%s': %w", specPath, err)
 	}
 
+	warnIfOpenAPI31(cfg.Warn, specBytes)
 	doc, err := ParseSpec(specBytes)
 	if err != nil {
 		return fmt.Errorf("failed to parse OpenAPI spec: %w", err)

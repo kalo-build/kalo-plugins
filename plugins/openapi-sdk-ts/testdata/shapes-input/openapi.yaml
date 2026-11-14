@@ -1,0 +1,55 @@
+openapi: "3.0.3"
+info:
+  title: Shapes API
+  version: 1.0.0
+paths:
+  /errors:
+    get:
+      operationId: listErrors
+      responses:
+        "200":
+          description: Errors seen by the service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /items/{id}:
+    put:
+      operationId: updateItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: dry_run
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    Item:
+      type: object
+      properties:
+        name:
+          type: string

@@ -36,15 +36,20 @@ func GenerateClient(doc *Document, packageName string) (string, error) {
 
 func collectClientImports(doc *Document) []string {
 	imps := map[string]bool{
-		"context":       true,
-		"encoding/json": true,
-		"fmt":           true,
-		"io":            true,
-		"net/http":      true,
-		"net/url":       true,
+		"context":  true,
+		"fmt":      true,
+		"io":       true,
+		"net/http": true,
+		"net/url":  true,
 	}
-	if hasRequestBodies(doc) {
+	// An import the generated code does not use is a compile error, so each
+	// one is added only when an operation emits code that uses it.
+	marshals, decodes := usesJSON(doc)
+	if marshals {
 		imps["bytes"] = true
+	}
+	if marshals || decodes {
+		imps["encoding/json"] = true
 	}
 	if !hasQueryParams(doc) {
 		delete(imps, "net/url") // an unused import is a compile error
@@ -68,15 +73,21 @@ func hasQueryParams(doc *Document) bool {
 	return false
 }
 
-func hasRequestBodies(doc *Document) bool {
+// usesJSON reports whether any operation emits a request-body marshal or a response decode,
+// using the same conditions as writeOperation.
+func usesJSON(doc *Document) (marshals, decodes bool) {
 	for _, pe := range doc.Paths {
 		for _, op := range pe.Operations {
-			if op.RequestBody != nil {
-				return true
+			hasBody := op.Method == "POST" || op.Method == "PUT" || op.Method == "PATCH"
+			if hasBody && requestBodyType(op) != "" {
+				marshals = true
+			}
+			if operationReturnType(op) != "" {
+				decodes = true
 			}
 		}
 	}
-	return false
+	return marshals, decodes
 }
 
 func writeClientStruct(b *strings.Builder) {

@@ -1,5 +1,7 @@
 package generate
 
+import "io"
+
 // Config holds configuration for Go SDK generation.
 type Config struct {
 	InputDir       string
@@ -9,6 +11,9 @@ type Config struct {
 	PackagePath    string
 	GenerateTypes  bool
 	GenerateClient bool
+
+	// Warn receives one-line warnings (nil: none).
+	Warn io.Writer
 }
 
 // Resolve applies default values for unset fields.

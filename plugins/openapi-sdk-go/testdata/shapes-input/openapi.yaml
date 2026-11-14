@@ -1,0 +1,32 @@
+openapi: "3.0.3"
+info:
+  title: Read-only API
+  version: 1.0.0
+paths:
+  /status:
+    get:
+      operationId: getStatus
+      responses:
+        "200":
+          description: Inline response schema, no $ref
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+  /ping:
+    post:
+      operationId: ping
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+      responses:
+        "204":
+          description: Pong

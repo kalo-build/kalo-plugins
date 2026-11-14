@@ -116,6 +116,7 @@ func main() {
 		GenerateTypes:  genTypes,
 		GenerateClient: genClient,
 	}
+	cfg.Warn = os.Stderr
 	cfg.Resolve()
 
 	logInfo(pluginConfig.Verbose, "Reading OpenAPI spec from: '%s'", filepath.Join(cfg.InputDir, cfg.SpecFileName))

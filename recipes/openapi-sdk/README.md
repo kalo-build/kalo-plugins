@@ -30,6 +30,7 @@ Measured against real specs, see the compile table in `experiments/openapi-sdk`.
 - Query parameters are all `string`; header and cookie parameters are ignored.
 - `oneOf`/`anyOf`/`allOf` become `unknown` / `interface{}`; `enum` values are not kept (the alias is the base type).
 - Only GET, POST, PUT, PATCH, DELETE.
+- Schema `$ref`s must be `#/components/schemas/<Name>`. Any other `$ref` (e.g. a JSON pointer into `#/paths/...`, as in bundled specs) stops the run with exit 1 and one line naming the first one; nothing is written.
 - No `go.mod` is written: `./sdk/go` is meant to be a package inside your own module. To check it standalone: `cd sdk/go && go mod init example.com/sdk && go build ./...`.
 - Very large specs: the host (not the plugins) can run out of memory, see the table.
 

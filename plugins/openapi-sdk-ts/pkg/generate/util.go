@@ -128,8 +128,18 @@ func tsTypeName(name string) string {
 	}
 	r := []rune(name)
 	r[0] = unicode.ToUpper(r[0])
-	return string(r)
+	name = string(r)
+	if clientReserved[name] {
+		name += "Model"
+	}
+	return name
 }
+
+// clientReserved are the names client.ts declares that a schema could take. A schema
+// type with one of these names would clash with the client class it is imported
+// into, so it gets a "Model" suffix (schema `Client` becomes `ClientModel`); the
+// client keeps its documented name. ApiError is handled by errorClassName instead.
+var clientReserved = map[string]bool{"Client": true}
 
 func splitNonIdent(s string) []string {
 	return strings.FieldsFunc(s, func(r rune) bool {

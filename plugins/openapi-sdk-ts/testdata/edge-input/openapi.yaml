@@ -99,6 +99,17 @@ components:
           type: string
         owner:
           $ref: '#/components/schemas/Pet'
+    ClientModel:
+      description: Takes the name the Client schema is renamed to; must not clash with it.
+      type: object
+      properties:
+        wraps:
+          $ref: '#/components/schemas/Client'
+    NewClient:
+      type: object
+      properties:
+        name:
+          type: string
     Pet:
       type: object
       required: [id, name]

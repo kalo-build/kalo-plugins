@@ -3,6 +3,14 @@ export interface ClientModel {
   owner?: Pet;
 }
 
+export interface ClientModelModel {
+  wraps?: ClientModel;
+}
+
+export interface NewClient {
+  name?: string;
+}
+
 export interface Pet {
   id: number;
   name: string;

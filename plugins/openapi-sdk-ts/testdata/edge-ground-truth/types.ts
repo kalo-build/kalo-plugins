@@ -1,3 +1,8 @@
+export interface ClientModel {
+  id?: string;
+  owner?: Pet;
+}
+
 export interface Pet {
   id: number;
   name: string;

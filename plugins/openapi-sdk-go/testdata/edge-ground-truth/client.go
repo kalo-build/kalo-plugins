@@ -34,6 +34,38 @@ func (e *apiError) Error() string {
 	return fmt.Sprintf("API error %d: %s", e.StatusCode, e.Body)
 }
 
+// GetClient calls GET /clients/{id}.
+func (c *Client) GetClient(ctx context.Context, id string) (ClientModel, error) {
+	path := fmt.Sprintf("/clients/%v", id)
+	reqURL := c.BaseURL + path
+	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
+	if err != nil {
+		var zero ClientModel
+		return zero, fmt.Errorf("failed to create request: %w", err)
+	}
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		var zero ClientModel
+		return zero, fmt.Errorf("request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		respBody, _ := io.ReadAll(resp.Body)
+		var zero ClientModel
+		return zero, &apiError{StatusCode: resp.StatusCode, Body: string(respBody)}
+	}
+
+	var result ClientModel
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		var zero ClientModel
+		return zero, fmt.Errorf("failed to decode response: %w", err)
+	}
+	return result, nil
+}
+
 // MetaRoot calls GET /meta/root.
 func (c *Client) MetaRoot(ctx context.Context) (ApiOverview, error) {
 	reqURL := c.BaseURL + "/meta/root"

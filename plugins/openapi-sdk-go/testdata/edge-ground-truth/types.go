@@ -1,5 +1,11 @@
 package client
 
+// ClientModel represents the Client schema.
+type ClientModel struct {
+	Id    *string `json:"id,omitempty"`
+	Owner *Pet    `json:"owner,omitempty"`
+}
+
 // Pet represents the Pet schema.
 type Pet struct {
 	Id   int     `json:"id"`

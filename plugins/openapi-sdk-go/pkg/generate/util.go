@@ -129,8 +129,17 @@ func goTypeName(name string) string {
 	}
 	r := []rune(name)
 	r[0] = unicode.ToUpper(r[0])
-	return string(r)
+	name = string(r)
+	if clientReserved[name] {
+		name += "Model"
+	}
+	return name
 }
+
+// clientReserved are the package-level names client.go declares. A schema with one
+// of these names would be a duplicate declaration, so its type gets a "Model" suffix
+// (schema `Client` becomes `ClientModel`); the client keeps its documented names.
+var clientReserved = map[string]bool{"Client": true, "NewClient": true}
 
 // pluralize performs basic English pluralization.
 func pluralize(s string) string {

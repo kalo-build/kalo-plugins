@@ -1,4 +1,4 @@
-import type { ApiOverview, Pets, Status } from "./types";
+import type { ApiOverview, ClientModel, Pets, Status } from "./types";
 
 export class ApiError extends Error {
   statusCode: number;
@@ -19,6 +19,19 @@ export class Client {
   constructor(baseUrl: string, fetchFn: typeof fetch = fetch.bind(globalThis)) {
     this.baseUrl = baseUrl;
     this.fetchFn = fetchFn;
+  }
+
+  async getClient(id: string): Promise<ClientModel> {
+    let url = `${this.baseUrl}/clients/${encodeURIComponent(String(id))}`;
+    const resp = await this.fetchFn(url, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+    });
+    if (!resp.ok) {
+      const body = await resp.text();
+      throw new ApiError(resp.status, body);
+    }
+    return resp.json() as Promise<ClientModel>;
   }
 
   async metaRoot(): Promise<ApiOverview> {

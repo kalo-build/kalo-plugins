@@ -74,8 +74,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /clients/{id}:
+    get:
+      operationId: getClient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A client record (the schema name clashes with the SDK client)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
 components:
   schemas:
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Pet'
     Pet:
       type: object
       required: [id, name]

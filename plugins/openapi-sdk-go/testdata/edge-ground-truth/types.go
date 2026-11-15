@@ -6,6 +6,16 @@ type ClientModel struct {
 	Owner *Pet    `json:"owner,omitempty"`
 }
 
+// ClientModelModel represents the ClientModel schema.
+type ClientModelModel struct {
+	Wraps *ClientModel `json:"wraps,omitempty"`
+}
+
+// NewClientModel represents the NewClient schema.
+type NewClientModel struct {
+	Name *string `json:"name,omitempty"`
+}
+
 // Pet represents the Pet schema.
 type Pet struct {
 	Id   int     `json:"id"`

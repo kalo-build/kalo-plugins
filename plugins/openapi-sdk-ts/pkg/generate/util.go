@@ -129,8 +129,18 @@ func tsTypeName(name string) string {
 	r := []rune(name)
 	r[0] = unicode.ToUpper(r[0])
 	name = string(r)
-	if clientReserved[name] {
+	if clientReserved[trimModel(name)] {
 		name += "Model"
+	}
+	return name
+}
+
+// trimModel strips every trailing "Model". goTypeName and tsTypeName add one "Model" to
+// any name whose stem is reserved, so Client -> ClientModel and ClientModel ->
+// ClientModelModel: the mapping stays one-to-one and two schemas never share a type.
+func trimModel(name string) string {
+	for strings.HasSuffix(name, "Model") {
+		name = strings.TrimSuffix(name, "Model")
 	}
 	return name
 }

@@ -40,7 +40,7 @@ Measured against real specs, see the compile table in `experiments/openapi-sdk`.
 
 ## Results on real public files
 
-Of five public OpenAPI files we tried, one compiles as published. Measured on Linux x86_64, 1 vCPU, 2 GB RAM, about 1.2 GB free, 14 Nov 2026, on kalo-cli v0.2.0-agent.2 with recipe 0.1.1. Compile checks: TypeScript 7.0.2 and 5.9.3 (`tsc --strict --noEmit`) and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
+Of five public OpenAPI files we tried, one compiles as published. Measured on Linux x86_64, 1 vCPU, 2 GB RAM, about 1.2 GB free, 14 Nov 2026, on kalo-cli v0.2.0-agent.2 with recipe 0.1.1. Recipe 0.1.2 (current) changes one thing: a schema named `Client` becomes `ClientModel`. On 0.1.2 the Petstore output is byte-identical to `testdata/golden` (paste test, 16 Nov 2026); the five files below were not re-run on 0.1.2. Compile checks: TypeScript 7.0.2 and 5.9.3 (`tsc --strict --noEmit`) and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
 
 | File | Fetched from | sha256 | Result |
 |---|---|---|---|

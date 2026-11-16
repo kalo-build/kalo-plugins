@@ -37,3 +37,38 @@ Measured against real specs, see the compile table in `experiments/openapi-sdk`.
 ## Tests
 
 `scripts/ci.sh` runs both plugins' golden tests, including `testdata/edge-input` (array/enum schemas, names with punctuation, reserved-word parameters), which compiles the output with `tsc --strict` (if `tsc` is installed) and `go vet`.
+
+## Results on real public files
+
+Of five public OpenAPI files we tried, one compiles as published. Measured on Linux x86_64, 1 vCPU, 2 GB RAM, about 1.2 GB free, 14 Nov 2026, on kalo-cli v0.2.0-agent.2 with recipe 0.1.1. Compile checks: TypeScript 7.0.2 and 5.9.3 (`tsc --strict --noEmit`) and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
+
+| File | Fetched from | sha256 | Result |
+|---|---|---|---|
+| Petstore (this recipe's fixture, not one of the five) | `testdata/openapi.yaml` | `cefaafa05eee75b1888762dea08a295f245e9f3e4bdb8777f4bdfed09e335339` | Compiles: `tsc --strict` and `go vet` clean. |
+| Plaid 2020-09-14.yml (351 operations, 3.3 MB) | raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml | `ef42469087e2c93242baaa8b83c90fb949f44d3dbae8ac0354d4bfd4cad2947d` | Compiles: `tsc --strict` and `go vet` clean. Second run byte-identical. |
+| apis.guru copy of the DigitalOcean 2.0 file | api.apis.guru/v2/specs/digitalocean.com/2.0/openapi.yaml | `2b7b040e296e92e40b5163e0bf90c3be95043ec4d27e193c491017614f69a54e` | Refused, exit 1, nothing written: its references point into `#/paths`. |
+| apis.guru copy of the SendGrid file | api.apis.guru/v2/specs/sendgrid.com/1.0.0/openapi.yaml | `4c655960ff9eaf02015e1d89bbf025b08cac0b44ecbb587094e459dde5369119` | Rejected before generation, exit 1, nothing written: "decode YAML: line 13002 has control character U+009F, which YAML does not allow (3 more after it)". |
+| GitHub REST api.github.com.json (14.3 MB) | raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json | `f7a3de68869181d34b232d88840d31f8157ade45cad1746eaab90cd3c801b31c` | Stopped, exit 1, nothing written: "ran out of memory at the 629 MiB plugin limit (set from free memory)". |
+| Stripe spec3.json (8.3 MB) | raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json | `7cff4cc46d0654101a36a3302f7544640f5f73e4f3cad6f264f0e23c19fa1776` | Stopped, exit 1, nothing written: "ran out of memory at the 592 MiB plugin limit (set from free memory)". With `--plugin-memory-mib 800` it stops on "infinite circular reference detected" instead. |
+
+The DigitalOcean and SendGrid files are apis.guru copies; the results describe the files as fetched, not the vendors' own versions. The DigitalOcean copy was the last file added, after we scanned candidates for control characters.
+
+What the refused DigitalOcean file prints (last line):
+
+```
+SDK generation failed: unsupported $ref "#/paths/~1v2~11-clicks/get/responses/401/content/application~1json/schema" (997 such $refs in the schemas read): only $refs to #/components/schemas/<Name> are supported
+```
+
+### Memory
+
+Plaid (3.3 MB): the whole `kalo` process peaked at 641 MiB (about 670 MB); the plugin's own memory, which the limit applies to, is part of that. The plugin memory limit is set from the memory that is free when the run starts (here about 600 MiB with about 1.2 GB free); `--plugin-memory-mib` raises it. We have not run the GitHub or Stripe file on a larger machine. One run per file on one machine (Plaid: two; Stripe: a first run with less memory free stopped the same way at a lower limit).
+
+### Output notes
+
+- The TypeScript files use relative imports without a `.js` extension. `bundler` resolution is tested. An ESM package with `moduleResolution: nodenext` is not tested, and we expect it to fail.
+- The output type-checks with TypeScript 7.0.2 and 5.9.3, `--strict`, on Petstore and Plaid.
+- "No runtime dependency": in the Petstore golden files the TypeScript client imports only `./types`, and the Go client imports only the standard library (`bytes`, `context`, `encoding/json`, `fmt`, `io`, `net/http`, `net/url`).
+
+### If you use openapi-typescript
+
+openapi-typescript has been in maintenance mode since 19 Sep 2026 ([its announcement](https://github.com/openapi-ts/openapi-typescript/issues/2874)). What this recipe writes is different: interfaces and a `fetch` client class, not the `paths` type that `openapi-fetch` reads, so it does not work with `openapi-fetch`; call sites change. Unions and enum values aren't typed.

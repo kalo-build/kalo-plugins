@@ -1,0 +1,5 @@
+# Plugins this recipe takes as released binaries instead of building from plugins/.
+# <plugin> <url> <sha256>. scripts/stage-recipe.sh downloads each one and refuses a different digest.
+# openapi-morphe = @kalo-build/plugin-openapi-morphe v1.0.0 on registry.kalo.build, unmodified
+# (source: github.com/kalo-build/plugin-openapi-morphe @ fcde75c, MIT, notice in third-party/).
+openapi-morphe https://registry.kalo.build/api/plugin-versions/00000000-0000-0000-0000-000000000263/download 35379df2f6f09895a91f5be92bb29d63ac7b14852af95d80a2285e612d0329c1

@@ -1,0 +1,12 @@
+name: Payment
+fields:
+    AmountCents:
+        type: Integer
+    ID:
+        type: UUID
+    InvoiceID:
+        type: UUID
+    Method:
+        type: PaymentMethod
+    PaidAt:
+        type: Time

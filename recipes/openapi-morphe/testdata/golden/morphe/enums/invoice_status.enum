@@ -1,0 +1,7 @@
+name: InvoiceStatus
+type: String
+entries:
+    draft: draft
+    open: open
+    paid: paid
+    void: void

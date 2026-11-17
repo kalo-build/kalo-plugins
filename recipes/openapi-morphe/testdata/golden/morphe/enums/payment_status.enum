@@ -1,0 +1,7 @@
+name: PaymentStatus
+type: String
+entries:
+    completed: completed
+    failed: failed
+    pending: pending
+    refunded: refunded

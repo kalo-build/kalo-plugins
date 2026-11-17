@@ -1,0 +1,6 @@
+name: CustomerCreate
+fields:
+    Email:
+        type: String
+    Name:
+        type: String

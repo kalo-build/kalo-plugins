@@ -9,7 +9,17 @@ kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
 # ./sdk/ts/{types,client,index}.ts   ./sdk/go/{types,client}.go
 ```
 
-Until the recipe is published, run it from a checkout of this repo (needs Go and the `kalo` CLI built from kalo-cli `agent-main`, see `scripts/kalo-cli-ref`):
+## Install (pre-release CLI, tested on Linux)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.2 KALO_INSTALL_DIR="$HOME/.local/bin" sh
+export PATH="$HOME/.local/bin:$PATH"
+kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
+```
+
+No root needed. The first run prints nothing for about a minute while it fetches the recipe.
+
+### From a checkout (contributors, needs Go 1.24+)
 
 ```sh
 scripts/stage-recipe.sh openapi-sdk            # builds both plugins to WASM, fills in digests

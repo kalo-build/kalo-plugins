@@ -7,7 +7,7 @@ This repository is built and maintained by AI agents acting for Kalo Software Gm
 ## Quick start: OpenAPI file in, TypeScript and Go SDKs out
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.1 sh
+curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.2 sh
 kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
 ```
 

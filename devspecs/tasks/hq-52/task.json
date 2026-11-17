@@ -1,0 +1,868 @@
+{
+  "task_id": "hq-52",
+  "series": "A",
+  "profile": "code-change",
+  "query": "kalo-plugins README + recipe README: pin agent.2, OpenAPI 3.0 wording, drop the stale \"until published\" block",
+  "status": "packed",
+  "created_at": "2026-11-17T15:40:14Z",
+  "updated_at": "2026-11-17T15:40:53Z",
+  "repo_root": "/tmp/kp",
+  "workspace": "/tmp/kp/devspecs/tasks/hq-52",
+  "artifacts": {
+    "series": "A",
+    "index": "A00-index.md",
+    "first_slice": "A01-kalo-plugins-readme-recipe-readme-pin-agent-2-openapi-3-0-plan.md",
+    "result": "A01-kalo-plugins-readme-recipe-readme-pin-agent-2-openapi-3-0-result.md",
+    "slices": [
+      {
+        "id": "A01",
+        "title": "kalo-plugins README + recipe README: pin agent.2, OpenAPI 3.0 wording, drop the stale \"until published\" block",
+        "plan": "A01-kalo-plugins-readme-recipe-readme-pin-agent-2-openapi-3-0-plan.md",
+        "result": "A01-kalo-plugins-readme-recipe-readme-pin-agent-2-openapi-3-0-result.md",
+        "kind": "slice",
+        "stage": "validated",
+        "decision": "promote",
+        "updated_at": "2026-11-17T15:40:53Z",
+        "latest_checkpoint_id": "cp_20261117T154053Z_a01_validated",
+        "latest_checkpoint": "checkpoints/20261117-154053-validated.md",
+        "latest_checkpoint_json": "checkpoints/20261117-154053-validated.json"
+      }
+    ]
+  },
+  "predicted_context": {
+    "relevant_areas": [
+      "plugins",
+      "scripts"
+    ],
+    "primary_files": [
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/generate.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/refs.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/refs.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/spec.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/spec.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/warn.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/warn.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "identifier/body match: 3.0"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/generate.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "scout source preservation: query roots opena,openapi,plugi,plugin; primary test roots gener,genera,generate; top source rank 5",
+          "bounded body evidence: openapi=10; bytes=6763"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/refs.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/refs.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/spec.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/spec.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/warn.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/warn.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "identifier/body match: 3.0"
+        ]
+      },
+      {
+        "path": "scripts/pack-recipe.sh",
+        "title": "scripts/pack-recipe.sh",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: recipe",
+          "query term match in body: kalo",
+          "query term match in body: openapi"
+        ]
+      },
+      {
+        "path": "scripts/stage-recipe.sh",
+        "title": "scripts/stage-recipe.sh",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: recipe",
+          "query term match in body: openapi",
+          "query term match in body: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/config.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/config.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/config.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/config.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/cmd/plugin/main.go",
+        "title": "plugins/openapi-sdk-go/cmd/plugin/main.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/types.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/types.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/cmd/plugin/main.go",
+        "title": "plugins/openapi-sdk-ts/cmd/plugin/main.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/types.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/types.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/util.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/util.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/client.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/client.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/util.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/util.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: pin"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/client.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/client.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L18",
+        "title": "TestGenerateSDK_Full",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L61",
+        "title": "TestGenerateSDK_TypesOnly",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/warn_test.go#L8",
+        "title": "TestWarnIfOpenAPI31",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "identifier/body match: 3.0"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/refs_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/refs_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/compile_test.go#L21",
+        "title": "TestCompileTestSuite",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/edge_test.go#L18",
+        "title": "TestEdgeSpec_Golden",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L86",
+        "title": "TestParseSpec",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L99",
+        "title": "TestGenerateTypes_Schemas",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L118",
+        "title": "TestGenerateClient_Operations",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L137",
+        "title": "TestConfig_Resolve",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/refs_test.go#L14",
+        "title": "TestUnsupportedRef_FailsWithOneLine",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/shapes_test.go#L18",
+        "title": "TestShapesSpec_Golden",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/compile_test.go#L21",
+        "title": "TestCompileTestSuite",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/edge_test.go#L18",
+        "title": "TestEdgeSpec_Golden",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L18",
+        "title": "TestGenerateSDK_Full",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L57",
+        "title": "TestGenerateSDK_TypesOnly",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L80",
+        "title": "TestGenerateSDK_ClientOnly",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L103",
+        "title": "TestGenerateSDK_ExternalTypes",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L131",
+        "title": "TestParseSpec",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L144",
+        "title": "TestGenerateTypes_Schemas",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L161",
+        "title": "TestGenerateClient_Operations",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L178",
+        "title": "TestConfig_Resolve",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L185",
+        "title": "TestConfig_Resolve_PreservesExplicit",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/refs_test.go#L14",
+        "title": "TestUnsupportedRef_FailsWithOneLine",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/shapes_test.go#L18",
+        "title": "TestShapesSpec_Golden",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/warn_test.go#L8",
+        "title": "TestWarnIfOpenAPI31",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "identifier/body match: 3.0"
+        ]
+      },
+      {
+        "path": "scripts/test-recipe.sh",
+        "title": "scripts/test-recipe.sh",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_relationship_recovery",
+          "query term match in path: recipe",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/warn_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/warn_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "identifier/body match: 3.0"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/warn_test.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/warn_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "identifier/body match: 3.0"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/shapes_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/shapes_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/edge_test.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/edge_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/refs_test.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/refs_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/shapes_test.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/shapes_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/compile_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/compile_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/compile_test.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/compile_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/generate_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      }
+    ],
+    "noise_risks": [
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/edge-ground-truth/client.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/edge-ground-truth/client.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/edge-ground-truth/types.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/edge-ground-truth/types.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/ground-truth/client.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/ground-truth/client.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/ground-truth/types.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/ground-truth/types.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/shapes-ground-truth/client.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/shapes-ground-truth/client.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: plugins"
+        ]
+      }
+    ],
+    "related_git_receipts": [
+      {
+        "sha": "f5ffed569aa7f1dc48ce70602f0822c96d011154",
+        "short_sha": "f5ffed5",
+        "committed_at": "2026-11-14",
+        "subject": "openapi-sdk-ts/go: refuse schema $refs outside #/components/schemas with one line and a non-zero exit (experiment ope...",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/generate.go",
+          "plugins/openapi-sdk-go/pkg/generate/refs.go",
+          "plugins/openapi-sdk-ts/pkg/generate/generate.go"
+        ],
+        "matched_terms": [
+          "openapi"
+        ],
+        "signals": [
+          "touched 4 packed path(s)",
+          "matched query anchors",
+          "cross-file change"
+        ]
+      },
+      {
+        "sha": "5d39ace4cf957fe11eb327160c21cb576c3f8aa7",
+        "short_sha": "5d39ace",
+        "committed_at": "2026-11-14",
+        "subject": "openapi-sdk-ts/go: ApiError clash, required-before-optional params, only used Go imports, OpenAPI 3.1 warning (experi...",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/generate.go",
+          "plugins/openapi-sdk-go/pkg/generate/warn.go",
+          "plugins/openapi-sdk-ts/pkg/generate/generate.go"
+        ],
+        "matched_terms": [
+          "openapi"
+        ],
+        "signals": [
+          "touched 4 packed path(s)",
+          "matched query anchors",
+          "cross-file change"
+        ]
+      },
+      {
+        "sha": "d99d1b4d74bd242b79480346d8bdf169e74abc99",
+        "short_sha": "d99d1b4",
+        "committed_at": "2026-11-14",
+        "subject": "chore: monorepo layout; move plugin-openapi-sdk-ts in as plugins/openapi-sdk-ts (#1)",
+        "matched_paths": [
+          "plugins/openapi-sdk-ts/pkg/generate/generate.go",
+          "plugins/openapi-sdk-ts/pkg/generate/spec.go"
+        ],
+        "matched_terms": [
+          "recipe",
+          "openapi"
+        ],
+        "signals": [
+          "touched 2 packed path(s)",
+          "matched query anchors",
+          "PR/issue reference",
+          "cross-file change"
+        ]
+      }
+    ]
+  },
+  "freshness_warnings": [
+    {
+      "path": "plugins/openapi-sdk-go/README.md",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: plugins, readme, openapi"
+    },
+    {
+      "path": "plugins/openapi-sdk-ts/README.md",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: plugins, readme, openapi"
+    },
+    {
+      "path": "recipes/openapi-sdk/README.md",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: readme, recipe, openapi"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/namespaces/kalox.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: kalo, recipe, openapi"
+    },
+    {
+      "path": "plugins/openapi-sdk-go/plugin.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: plugins, openapi"
+    },
+    {
+      "path": "plugins/openapi-sdk-ts/plugin.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: plugins, openapi"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/bindings/go-sdk.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: recipe, openapi"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/bindings/openapi.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: recipe, openapi"
+    }
+  ],
+  "risk_cards": [
+    {
+      "id": "stale-index",
+      "title": "On-disk paths matched the task but were not indexed",
+      "severity": "medium",
+      "source": "freshness",
+      "evidence": [
+        "`plugins/openapi-sdk-go/README.md` - on-disk path matched task terms but was not in the indexed candidate set: plugins, readme, openapi",
+        "`plugins/openapi-sdk-ts/README.md` - on-disk path matched task terms but was not in the indexed candidate set: plugins, readme, openapi",
+        "`recipes/openapi-sdk/README.md` - on-disk path matched task terms but was not in the indexed candidate set: readme, recipe, openapi",
+        "`recipes/openapi-sdk/descriptors/namespaces/kalox.yaml` - on-disk path matched task terms but was not in the indexed candidate set: kalo, recipe, openapi"
+      ],
+      "agent_check": "Inspect the warned files or refresh the index before trusting missing context.",
+      "count": 8
+    }
+  ],
+  "confidence": {
+    "primary_file_confidence": "high",
+    "test_coverage_confidence": "high",
+    "docs_config_confidence": "low",
+    "git_receipt_confidence": "high",
+    "noise_risk": "high",
+    "pack_completeness": "low",
+    "why": [
+      "found 20 likely primary file(s)",
+      "found 38 likely test file(s)",
+      "found 3 related Git receipt(s)",
+      "5 file(s) were downgraded as likely noise"
+    ],
+    "agent_instruction": "Validate the test and integration surface before editing. Record critical misses and distracting inclusions in the slice result or a task checkpoint."
+  },
+  "durability": {}
+}

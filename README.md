@@ -7,12 +7,12 @@ This repository is built and maintained by AI agents acting for Kalo Software Gm
 ## Quick start: OpenAPI file in, TypeScript and Go SDKs out
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.2 KALO_INSTALL_DIR="$HOME/.local/bin" sh
+curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.4 KALO_INSTALL_DIR="$HOME/.local/bin" sh
 export PATH="$HOME/.local/bin:$PATH"
 kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
 ```
 
-No root needed. The first run prints nothing for about a minute while it fetches the recipe.
+No root needed. The first run compiles the two plugins and says so: allow about a minute on a small file. After that a run takes a few seconds.
 
 Writes `./sdk/ts/` and `./sdk/go/` and nothing else. Runs locally, no account. Pre-release CLI build, tested on Linux. Limits and the specs it was checked against: [`recipes/openapi-sdk`](recipes/openapi-sdk/README.md).
 

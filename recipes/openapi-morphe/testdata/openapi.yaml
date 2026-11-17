@@ -1,0 +1,184 @@
+openapi: "3.1.0"
+info:
+  title: Stripe Lite API
+  version: 1.0.0
+paths:
+  /v1/customers:
+    get:
+      operationId: listCustomers
+      summary: List customers
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+    post:
+      operationId: createCustomer
+      summary: Create a customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreate'
+      responses:
+        "201":
+          description: Created customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /v1/invoices:
+    get:
+      operationId: listInvoices
+      summary: List invoices
+      responses:
+        "200":
+          description: List of invoices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Invoice'
+  /v1/payments:
+    post:
+      operationId: createPayment
+      summary: Create a payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreate'
+      responses:
+        "201":
+          description: Created payment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - created_at
+    CustomerCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - name
+        - email
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        amount_cents:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum:
+            - draft
+            - open
+            - paid
+            - void
+        due_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customer_id
+        - amount_cents
+        - currency
+        - status
+        - created_at
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        amount_cents:
+          type: integer
+        method:
+          type: string
+          enum:
+            - card
+            - bank_transfer
+            - wire
+        paid_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - invoice_id
+        - amount_cents
+        - method
+        - paid_at
+    PaymentCreate:
+      type: object
+      properties:
+        invoice_id:
+          type: string
+          format: uuid
+        amount_cents:
+          type: integer
+        method:
+          type: string
+          enum:
+            - card
+            - bank_transfer
+            - wire
+      required:
+        - invoice_id
+        - amount_cents
+        - method
+    PaymentStatus:
+      type: string
+      enum:
+        - pending
+        - completed
+        - failed
+        - refunded

@@ -1,0 +1,6 @@
+name: PaymentCreateMethod
+type: String
+entries:
+    bank_transfer: bank_transfer
+    card: card
+    wire: wire

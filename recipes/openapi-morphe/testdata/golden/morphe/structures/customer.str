@@ -1,0 +1,10 @@
+name: Customer
+fields:
+    CreatedAt:
+        type: Time
+    Email:
+        type: String
+    ID:
+        type: UUID
+    Name:
+        type: String

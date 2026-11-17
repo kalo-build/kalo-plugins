@@ -1,0 +1,8 @@
+name: PaymentCreate
+fields:
+    AmountCents:
+        type: Integer
+    InvoiceID:
+        type: UUID
+    Method:
+        type: PaymentCreateMethod

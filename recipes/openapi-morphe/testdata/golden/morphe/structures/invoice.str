@@ -1,0 +1,17 @@
+name: Invoice
+fields:
+    AmountCents:
+        type: Integer
+    CreatedAt:
+        type: Time
+    Currency:
+        type: String
+    CustomerID:
+        type: UUID
+    DueDate:
+        type: Date
+        attributes: [optional]
+    ID:
+        type: UUID
+    Status:
+        type: InvoiceStatus

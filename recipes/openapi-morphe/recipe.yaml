@@ -1,0 +1,7 @@
+name: openapi-morphe
+version: 0.1.0
+description: OpenAPI file in, Morphe structures and enums out (technical preview, built by an AI agent acting for Kalo Software GmbH).
+catalog: descriptors
+input: {from: KALOX:OPENAPI@1:YAML@1, accept: ["*.yaml", "*.yml", "*.json"]}
+outputs:
+  - {to: KALOX:MORPHE@1:FILESET@1, dir: morphe}

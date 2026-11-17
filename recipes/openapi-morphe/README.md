@@ -32,6 +32,8 @@ For the fixture in `testdata/openapi.yaml` the output is exactly `testdata/golde
 
 - It reads `components.schemas` only. Paths, operations, parameters and security schemes are not turned into Morphe.
 - It writes structures and enums, not Morphe models or entities.
+- It renames properties to PascalCase without a message: `customer_id` becomes `CustomerID`, `id` becomes `ID`, `amount_cents` becomes `AmountCents` (see `testdata/golden`).
+- It does not keep integer width: `format: int32` and `format: int64` both become `Integer`, without a message (Petstore's `Pet.id` and `Error.code`).
 - It does not generate code from the Morphe files. The Morphe plugins that take this folder (for example to TypeScript types or Go structs) run through a `kalo.yaml` today; see the [kalo-cli README](https://github.com/kalo-build/kalo-cli#readme). There is no recipe for that step yet.
 
 ## Results on public files

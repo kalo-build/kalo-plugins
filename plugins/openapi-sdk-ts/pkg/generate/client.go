@@ -57,6 +57,9 @@ func collectSchemaRefTypes(sr *SchemaRef, seen map[string]bool) {
 	if sr.Schema == nil {
 		return
 	}
+	if sr.Schema.HasType("array") && sr.Schema.Items != nil && sr.Schema.Items.Ref != "" {
+		seen[tsTypeName(refToTypeName(sr.Schema.Items.Ref))] = true
+	}
 	for _, prop := range sr.Schema.Properties {
 		if prop.Ref != "" {
 			seen[tsTypeName(refToTypeName(prop.Ref))] = true
@@ -296,6 +299,10 @@ func operationReturnType(op Operation) string {
 		}
 		if sr.Schema != nil {
 			s := sr.Schema
+			// An inline array of $ref (GET /notes -> Note[]): the body is the list.
+			if s.HasType("array") && s.Items != nil && s.Items.Ref != "" {
+				return tsTypeName(refToTypeName(s.Items.Ref)) + "[]"
+			}
 			if s.HasType("object") && len(s.Properties) > 0 {
 				for _, prop := range s.Properties {
 					if prop.Name == "data" {

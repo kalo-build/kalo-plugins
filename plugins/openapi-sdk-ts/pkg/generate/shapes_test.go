@@ -48,6 +48,8 @@ func TestShapesSpec_Golden(t *testing.T) {
 		cmd.Dir = out
 		o, err := cmd.CombinedOutput()
 		require.NoError(t, err, string(o))
+	} else if os.Getenv("CI") != "" {
+		t.Fatal("tsc not on PATH in CI: scripts/ci.sh installs it")
 	} else {
 		t.Log("tsc not on PATH: skipped compile check")
 	}

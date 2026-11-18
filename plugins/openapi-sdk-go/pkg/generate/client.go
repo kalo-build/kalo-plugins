@@ -361,6 +361,10 @@ func operationReturnType(op Operation) string {
 		}
 		if sr.Schema != nil {
 			s := sr.Schema
+			// An inline array of $ref (GET /notes -> []Note): the body is the list.
+			if s.HasType("array") && s.Items != nil && s.Items.Ref != "" {
+				return "[]" + goTypeName(refToTypeName(s.Items.Ref))
+			}
 			if s.HasType("object") && len(s.Properties) > 0 {
 				for _, prop := range s.Properties {
 					if prop.Name == "data" {

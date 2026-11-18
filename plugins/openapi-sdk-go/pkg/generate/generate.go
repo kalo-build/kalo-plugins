@@ -220,15 +220,6 @@ func extractMediaTypeSchemaFromContent(content *orderedmap.Map[string, *v3.Media
 }
 
 func convertSchemaProxy(proxy *base.SchemaProxy) Schema {
-	return convertSchemaProxyIn(proxy, map[string]bool{})
-}
-
-// convertSchemaProxyIn converts a schema, tracking the $refs on the current path in
-// visiting. A $ref already on the path is a cycle (a tree's parent / children, comment
-// replies): it gets a shallow schema (type, format, readOnly) instead of being expanded
-// again, which is all the generators read from a $ref'd schema. Acyclic specs convert
-// exactly as before.
-func convertSchemaProxyIn(proxy *base.SchemaProxy, visiting map[string]bool) Schema {
 	if proxy == nil {
 		return Schema{}
 	}
@@ -236,25 +227,54 @@ func convertSchemaProxyIn(proxy *base.SchemaProxy, visiting map[string]bool) Sch
 	if resolved == nil {
 		return Schema{}
 	}
-	if ref := proxy.GetReference(); ref != "" {
-		if visiting[ref] {
-			return shallowSchema(resolved)
-		}
-		visiting[ref] = true
-		defer delete(visiting, ref)
-	}
-	return convertSchemaIn(resolved, visiting)
+	return convertSchema(resolved)
 }
 
-func shallowSchema(s *base.Schema) Schema {
-	schema := Schema{Types: s.Type, Format: s.Format, Required: make(map[string]bool)}
+// refSchema is the schema of a $ref'd property or array item. The generators name a
+// $ref'd schema by its ref and read only its type, format, readOnly and, for an array,
+// its items' ref (a {data: $ref List} wrapper returns []Item). So it is never expanded:
+// self-references and cycles (a tree's parent / children, comment replies) terminate,
+// and conversion stays linear in the size of the spec however densely schemas link.
+func refSchema(proxy *base.SchemaProxy) Schema {
+	s := flatSchema(proxy)
+	if proxy == nil || proxy.Schema() == nil {
+		return s
+	}
+	if items := proxy.Schema().Items; items != nil && items.A != nil {
+		itemSchema := flatSchema(items.A)
+		s.Items = &SchemaRef{Ref: items.A.GetReference(), Schema: &itemSchema}
+	}
+	return s
+}
+
+// flatSchema keeps type, format and readOnly only. Schema() is nil when a ref doesn't
+// resolve; refs.go reports that ref.
+func flatSchema(proxy *base.SchemaProxy) Schema {
+	schema := Schema{Required: make(map[string]bool)}
+	if proxy == nil {
+		return schema
+	}
+	s := proxy.Schema()
+	if s == nil {
+		return schema
+	}
+	schema.Types = s.Type
+	schema.Format = s.Format
 	if s.ReadOnly != nil {
 		schema.ReadOnly = *s.ReadOnly
 	}
 	return schema
 }
 
-func convertSchemaIn(s *base.Schema, visiting map[string]bool) Schema {
+// convertPropertyProxy expands an inline schema and keeps a $ref'd one shallow.
+func convertPropertyProxy(proxy *base.SchemaProxy) Schema {
+	if proxy != nil && proxy.GetReference() != "" {
+		return refSchema(proxy)
+	}
+	return convertSchemaProxy(proxy)
+}
+
+func convertSchema(s *base.Schema) Schema {
 	schema := Schema{
 		Types:    s.Type,
 		Format:   s.Format,
@@ -277,7 +297,7 @@ func convertSchemaIn(s *base.Schema, visiting map[string]bool) Schema {
 			np := NamedProperty{Name: propName}
 			if propProxy != nil {
 				np.Ref = propProxy.GetReference()
-				np.Schema = convertSchemaProxyIn(propProxy, visiting)
+				np.Schema = convertPropertyProxy(propProxy)
 			}
 			schema.Properties = append(schema.Properties, np)
 		}
@@ -288,7 +308,7 @@ func convertSchemaIn(s *base.Schema, visiting map[string]bool) Schema {
 
 	if s.Items != nil && s.Items.A != nil {
 		itemRef := s.Items.A.GetReference()
-		itemSchema := convertSchemaProxyIn(s.Items.A, visiting)
+		itemSchema := convertPropertyProxy(s.Items.A)
 		schema.Items = &SchemaRef{Ref: itemRef, Schema: &itemSchema}
 	}
 

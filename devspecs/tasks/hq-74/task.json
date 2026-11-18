@@ -5,7 +5,7 @@
   "query": "Recipe 0.1.4: optional self-reference generates (openapi-sdk-ts/go), PR only, no tag before the website merge",
   "status": "packed",
   "created_at": "2026-11-18T18:35:16Z",
-  "updated_at": "2026-11-18T18:44:31Z",
+  "updated_at": "2026-11-18T19:11:48Z",
   "repo_root": "/data/workspaces/eng_head/kalo-plugins",
   "workspace": "/data/workspaces/eng_head/kalo-plugins/devspecs/tasks/hq-74",
   "artifacts": {
@@ -22,10 +22,10 @@
         "kind": "slice",
         "stage": "validated",
         "decision": "promote",
-        "updated_at": "2026-11-18T18:44:31Z",
-        "latest_checkpoint_id": "cp_20261118T184431Z_c01_validated",
-        "latest_checkpoint": "checkpoints/20261118-184431-validated.md",
-        "latest_checkpoint_json": "checkpoints/20261118-184431-validated.json"
+        "updated_at": "2026-11-18T19:11:48Z",
+        "latest_checkpoint_id": "cp_20261118T191148Z_c01_validated",
+        "latest_checkpoint": "checkpoints/20261118-191148-validated.md",
+        "latest_checkpoint_json": "checkpoints/20261118-191148-validated.json"
       }
     ]
   },

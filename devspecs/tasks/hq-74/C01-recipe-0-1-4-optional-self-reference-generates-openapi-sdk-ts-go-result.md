@@ -59,3 +59,16 @@
   - `plugins/openapi-sdk-ts/testdata/selfref/self-ref-optional.json`
 - Tests run:
   - `go vet ./... && go test ./... in plugins/openapi-sdk-ts (tsc 5.8.2 on PATH) and plugins/openapi-sdk-go; mutation: reverting ts generate.go -> stack overflow in TestSelfRef_OptionalDirect`
+
+### Checkpoint
+- Created At: 2026-11-18T19:11:48Z
+- Stage: validated
+- Decision: promote
+- Source: `checkpoints/20261118-191148-validated.md`
+- Structured Evidence: `checkpoints/20261118-191148-validated.json`
+- What changed: -
+- Evidence for decision: 1 test command(s)
+- What remains: -
+- Next iteration: promote to the next slice
+- Tests run:
+  - `CI=1 go vet + go test -count=1 ./... in openapi-sdk-go and openapi-sdk-ts (tsc on PATH); wasip1 builds; mutations: c5e1c0f generator -> dense n=40 killed at 60 s; refSchema without items -> wrapper test fails`

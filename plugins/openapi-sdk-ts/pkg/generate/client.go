@@ -125,7 +125,7 @@ func writeClientMethod(b *strings.Builder, path string, op Operation, used map[s
 	} else {
 		used[funcName] = 1
 	}
-	returnType := operationReturnType(op)
+	returnType, unwrapData := operationReturn(op)
 	hasBody := op.Method == "POST" || op.Method == "PUT" || op.Method == "PATCH"
 	bodyType := requestBodyType(op)
 	pathParams := extractPathParams(op)
@@ -158,7 +158,10 @@ func writeClientMethod(b *strings.Builder, path string, op Operation, used map[s
 	b.WriteString("      throw new " + errName + "(resp.status, body);\n")
 	b.WriteString("    }\n")
 
-	if returnType != "" {
+	if returnType != "" && unwrapData {
+		// {data: X}: return the data field, not the wrapper object.
+		b.WriteString(fmt.Sprintf("    return ((await resp.json()) as { data: %s }).data;\n", returnType))
+	} else if returnType != "" {
 		b.WriteString(fmt.Sprintf("    return resp.json() as Promise<%s>;\n", returnType))
 	}
 
@@ -288,38 +291,46 @@ func methodPrefix(method string) string {
 	}
 }
 
+// operationReturnType is the method's result type, or "" for no typed result.
 func operationReturnType(op Operation) string {
+	t, _ := operationReturn(op)
+	return t
+}
+
+// operationReturn gives the result type of the first 200/201 response and whether the
+// body is a {data: ...} wrapper whose data field is the result (unwrapData).
+func operationReturn(op Operation) (string, bool) {
 	for _, code := range []string{"200", "201"} {
 		sr, ok := op.Responses[code]
 		if !ok || sr == nil {
 			continue
 		}
 		if sr.Ref != "" {
-			return tsTypeName(refToTypeName(sr.Ref))
+			return tsTypeName(refToTypeName(sr.Ref)), false
 		}
 		if sr.Schema != nil {
 			s := sr.Schema
-			// An inline array of $ref (GET /notes -> Note[]): the body is the list.
+			// An inline array of $ref (GET /notes -> list of Note): the body is the list.
 			if s.HasType("array") && s.Items != nil && s.Items.Ref != "" {
-				return tsTypeName(refToTypeName(s.Items.Ref)) + "[]"
+				return tsTypeName(refToTypeName(s.Items.Ref)) + "[]", false
 			}
 			if s.HasType("object") && len(s.Properties) > 0 {
 				for _, prop := range s.Properties {
 					if prop.Name == "data" {
 						if prop.Schema.HasType("array") && prop.Schema.Items != nil {
 							if prop.Schema.Items.Ref != "" {
-								return tsTypeName(refToTypeName(prop.Schema.Items.Ref)) + "[]"
+								return tsTypeName(refToTypeName(prop.Schema.Items.Ref)) + "[]", true
 							}
 						}
 						if prop.Ref != "" {
-							return tsTypeName(refToTypeName(prop.Ref))
+							return tsTypeName(refToTypeName(prop.Ref)), true
 						}
 					}
 				}
 			}
 		}
 	}
-	return ""
+	return "", false
 }
 
 func requestBodyType(op Operation) string {

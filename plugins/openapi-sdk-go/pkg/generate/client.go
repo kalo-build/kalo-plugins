@@ -136,7 +136,7 @@ func writeOperation(b *strings.Builder, path string, op Operation, used map[stri
 	} else {
 		used[funcName] = 1
 	}
-	returnType := operationReturnType(op)
+	returnType, unwrapData := operationReturn(op)
 	hasBody := op.Method == "POST" || op.Method == "PUT" || op.Method == "PATCH"
 	bodyType := requestBodyType(op)
 	pathParams := extractPathParams(op)
@@ -202,7 +202,17 @@ func writeOperation(b *strings.Builder, path string, op Operation, used map[stri
 	}
 	b.WriteString("\t}\n")
 
-	if returnType != "" {
+	if returnType != "" && unwrapData {
+		// {data: X}: decode the wrapper object and return its data field.
+		b.WriteString("\n\tvar result struct {\n")
+		b.WriteString(fmt.Sprintf("\t\tData %s `json:\"data\"`\n", returnType))
+		b.WriteString("\t}\n")
+		b.WriteString("\tif err := json.NewDecoder(resp.Body).Decode(&result); err != nil {\n")
+		b.WriteString(fmt.Sprintf("\t\tvar zero %s\n", returnType))
+		b.WriteString("\t\treturn zero, fmt.Errorf(\"failed to decode response: %w\", err)\n")
+		b.WriteString("\t}\n")
+		b.WriteString("\treturn result.Data, nil\n")
+	} else if returnType != "" {
 		b.WriteString(fmt.Sprintf("\n\tvar result %s\n", returnType))
 		b.WriteString("\tif err := json.NewDecoder(resp.Body).Decode(&result); err != nil {\n")
 		b.WriteString(fmt.Sprintf("\t\tvar zero %s\n", returnType))
@@ -350,38 +360,46 @@ func methodPrefix(method string) string {
 	}
 }
 
+// operationReturnType is the method's result type, or "" for no typed result.
 func operationReturnType(op Operation) string {
+	t, _ := operationReturn(op)
+	return t
+}
+
+// operationReturn gives the result type of the first 200/201 response and whether the
+// body is a {data: ...} wrapper whose data field is the result (unwrapData).
+func operationReturn(op Operation) (string, bool) {
 	for _, code := range []string{"200", "201"} {
 		sr, ok := op.Responses[code]
 		if !ok || sr == nil {
 			continue
 		}
 		if sr.Ref != "" {
-			return goTypeName(refToTypeName(sr.Ref))
+			return goTypeName(refToTypeName(sr.Ref)), false
 		}
 		if sr.Schema != nil {
 			s := sr.Schema
-			// An inline array of $ref (GET /notes -> []Note): the body is the list.
+			// An inline array of $ref (GET /notes -> list of Note): the body is the list.
 			if s.HasType("array") && s.Items != nil && s.Items.Ref != "" {
-				return "[]" + goTypeName(refToTypeName(s.Items.Ref))
+				return "[]" + goTypeName(refToTypeName(s.Items.Ref)), false
 			}
 			if s.HasType("object") && len(s.Properties) > 0 {
 				for _, prop := range s.Properties {
 					if prop.Name == "data" {
 						if prop.Schema.HasType("array") && prop.Schema.Items != nil {
 							if prop.Schema.Items.Ref != "" {
-								return "[]" + goTypeName(refToTypeName(prop.Schema.Items.Ref))
+								return "[]" + goTypeName(refToTypeName(prop.Schema.Items.Ref)), true
 							}
 						}
 						if prop.Ref != "" {
-							return goTypeName(refToTypeName(prop.Ref))
+							return goTypeName(refToTypeName(prop.Ref)), true
 						}
 					}
 				}
 			}
 		}
 	}
-	return ""
+	return "", false
 }
 
 func requestBodyType(op Operation) string {

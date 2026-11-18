@@ -48,9 +48,43 @@ func TestNotesSpec_Golden(t *testing.T) {
 		cmd.Dir = out
 		o, err := cmd.CombinedOutput()
 		require.NoError(t, err, string(o))
+
+		// Runtime: the client returns the parsed list for an inline array of $ref, and the
+		// data field (not the wrapper) for {data: [$ref]} and {data: $ref}.
+		cmd = exec.Command(tsc, "--strict", "--target", "es2020", "--lib", "es2020,dom", "--module", "commonjs",
+			"--moduleResolution", "node", "--outDir", "js", "types.ts", "client.ts", "index.ts")
+		cmd.Dir = out
+		o, err = cmd.CombinedOutput()
+		require.NoError(t, err, string(o))
+		require.NoError(t, os.WriteFile(filepath.Join(out, "js", "runtime.js"), []byte(notesRuntimeJS), 0o644))
+		cmd = exec.Command("node", "runtime.js")
+		cmd.Dir = filepath.Join(out, "js")
+		o, err = cmd.CombinedOutput()
+		require.NoError(t, err, string(o))
+		require.Contains(t, string(o), "runtime ok")
 	} else if os.Getenv("CI") != "" {
 		t.Fatal("tsc not on PATH in CI: scripts/ci.sh installs it")
 	} else {
 		t.Log("tsc not on PATH: skipped compile check")
 	}
 }
+
+const notesRuntimeJS = `const assert = require("assert");
+const { Client } = require("./client");
+const bodies = {
+  "/notes": [{ id: "n1", title: "a" }, { id: "n2", title: "b" }],
+  "/notes/page": { data: [{ id: "n3", title: "c" }], next: "x" },
+  "/notes/latest": { data: { id: "n4", title: "d" } },
+};
+const fakeFetch = async (url) => {
+  const path = new URL(url).pathname;
+  return { ok: true, status: 200, json: async () => bodies[path], text: async () => "" };
+};
+(async () => {
+  const c = new Client("http://x", fakeFetch);
+  assert.deepStrictEqual((await c.listNotes()).map((n) => n.id), ["n1", "n2"]);
+  assert.deepStrictEqual((await c.listNotesPage()).map((n) => n.id), ["n3"]);
+  assert.strictEqual((await c.getLatestNote()).id, "n4");
+  console.log("runtime ok");
+})().catch((e) => { console.error(e); process.exit(1); });
+`

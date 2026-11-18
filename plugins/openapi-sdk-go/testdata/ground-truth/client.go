@@ -56,12 +56,14 @@ func (c *Client) ListCompany(ctx context.Context) ([]Company, error) {
 		return zero, &apiError{StatusCode: resp.StatusCode, Body: string(respBody)}
 	}
 
-	var result []Company
+	var result struct {
+		Data []Company `json:"data"`
+	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		var zero []Company
 		return zero, fmt.Errorf("failed to decode response: %w", err)
 	}
-	return result, nil
+	return result.Data, nil
 }
 
 // CreateCompany calls POST /api/companies.

@@ -48,6 +48,32 @@ export class Client {
     return resp.json() as Promise<Note>;
   }
 
+  async getLatestNote(): Promise<Note> {
+    let url = `${this.baseUrl}/notes/latest`;
+    const resp = await this.fetchFn(url, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+    });
+    if (!resp.ok) {
+      const body = await resp.text();
+      throw new ApiError(resp.status, body);
+    }
+    return ((await resp.json()) as { data: Note }).data;
+  }
+
+  async listNotesPage(): Promise<Note[]> {
+    let url = `${this.baseUrl}/notes/page`;
+    const resp = await this.fetchFn(url, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+    });
+    if (!resp.ok) {
+      const body = await resp.text();
+      throw new ApiError(resp.status, body);
+    }
+    return ((await resp.json()) as { data: Note[] }).data;
+  }
+
   async getStats(): Promise<void> {
     let url = `${this.baseUrl}/notes/stats`;
     const resp = await this.fetchFn(url, {

@@ -103,6 +103,72 @@ func (c *Client) CreateNote(ctx context.Context, body NewNote) (Note, error) {
 	return result, nil
 }
 
+// GetLatestNote calls GET /notes/latest.
+func (c *Client) GetLatestNote(ctx context.Context) (Note, error) {
+	reqURL := c.BaseURL + "/notes/latest"
+	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
+	if err != nil {
+		var zero Note
+		return zero, fmt.Errorf("failed to create request: %w", err)
+	}
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		var zero Note
+		return zero, fmt.Errorf("request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		respBody, _ := io.ReadAll(resp.Body)
+		var zero Note
+		return zero, &apiError{StatusCode: resp.StatusCode, Body: string(respBody)}
+	}
+
+	var result struct {
+		Data Note `json:"data"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		var zero Note
+		return zero, fmt.Errorf("failed to decode response: %w", err)
+	}
+	return result.Data, nil
+}
+
+// ListNotesPage calls GET /notes/page.
+func (c *Client) ListNotesPage(ctx context.Context) ([]Note, error) {
+	reqURL := c.BaseURL + "/notes/page"
+	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
+	if err != nil {
+		var zero []Note
+		return zero, fmt.Errorf("failed to create request: %w", err)
+	}
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		var zero []Note
+		return zero, fmt.Errorf("request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		respBody, _ := io.ReadAll(resp.Body)
+		var zero []Note
+		return zero, &apiError{StatusCode: resp.StatusCode, Body: string(respBody)}
+	}
+
+	var result struct {
+		Data []Note `json:"data"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		var zero []Note
+		return zero, fmt.Errorf("failed to decode response: %w", err)
+	}
+	return result.Data, nil
+}
+
 // GetStats calls GET /notes/stats.
 func (c *Client) GetStats(ctx context.Context) error {
 	reqURL := c.BaseURL + "/notes/stats"

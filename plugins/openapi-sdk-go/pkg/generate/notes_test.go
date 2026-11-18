@@ -47,4 +47,53 @@ func TestNotesSpec_Golden(t *testing.T) {
 	cmd.Dir = out
 	o, err := cmd.CombinedOutput()
 	require.NoError(t, err, string(o))
+
+	// Runtime: the generated client returns the parsed list for an inline array of $ref,
+	// and the data field (not the wrapper) for {data: [$ref]} and {data: $ref}.
+	require.NoError(t, os.WriteFile(filepath.Join(out, "runtime_test.go"), []byte(notesRuntimeTest), 0o644))
+	cmd = exec.Command("go", "test", "./...")
+	cmd.Dir = out
+	o, err = cmd.CombinedOutput()
+	require.NoError(t, err, string(o))
 }
+
+const notesRuntimeTest = `package client
+
+import (
+	"context"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+)
+
+func TestRuntime(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/notes":
+			w.Write([]byte(` + "`" + `[{"id":"n1","title":"a"},{"id":"n2","title":"b"}]` + "`" + `))
+		case "/notes/page":
+			w.Write([]byte(` + "`" + `{"data":[{"id":"n3","title":"c"}],"next":"x"}` + "`" + `))
+		case "/notes/latest":
+			w.Write([]byte(` + "`" + `{"data":{"id":"n4","title":"d"}}` + "`" + `))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+	c := &Client{BaseURL: srv.URL, HTTPClient: srv.Client()}
+	ctx := context.Background()
+
+	list, err := c.ListNotes(ctx)
+	if err != nil || len(list) != 2 || list[1].Id != "n2" {
+		t.Fatalf("ListNotes: %v %+v", err, list)
+	}
+	page, err := c.ListNotesPage(ctx)
+	if err != nil || len(page) != 1 || page[0].Id != "n3" {
+		t.Fatalf("ListNotesPage: %v %+v", err, page)
+	}
+	latest, err := c.GetLatestNote(ctx)
+	if err != nil || latest.Id != "n4" || latest.Title != "d" {
+		t.Fatalf("GetLatestNote: %v %+v", err, latest)
+	}
+}
+`

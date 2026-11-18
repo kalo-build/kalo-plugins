@@ -19,6 +19,14 @@ kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
 
 No root needed. The first run compiles the two plugins and says so: allow about a minute on a small file. After that a run takes a few seconds.
 
+What it leaves on disk (measured 18 Nov 2026, Linux x86_64, 1 vCPU, 2 GB RAM, kalo-cli v0.2.0-agent.4, recipe 0.1.3, Petstore, clean `$HOME`): 210.9 MB for 25 KB of output. 15.4 MB is the binary (`~/.local/bin/kalo`), 42.1 MB the recipe cache (the two plugin WASM files and their descriptors, `~/.cache/kalo/recipes`) and 153.3 MB the compiled plugins (`~/.cache/kalo/wazero`, which is what makes later runs take seconds). The download is 5,556,471 bytes for the CLI tarball (`linux_x86_64`) and 8,648,297 bytes for the recipe tarball. To remove all of it:
+
+```sh
+rm -rf ~/.local/bin/kalo ~/.cache/kalo
+```
+
+If `XDG_CACHE_HOME` is set, the caches are in `$XDG_CACHE_HOME/kalo` instead. `KALO_CACHE_DIR` moves them. `KALO_NO_COMPILE_CACHE=1` skips the 153.3 MB, but then every run compiles the plugins again.
+
 ### From a checkout (contributors, needs Go 1.24+)
 
 ```sh
@@ -40,6 +48,7 @@ Measured against real specs, see the compile table in `experiments/openapi-sdk`.
 - Query parameters are all `string`; header and cookie parameters are ignored.
 - `oneOf`/`anyOf`/`allOf` become `unknown` / `interface{}`; `enum` values are not kept (the alias is the base type).
 - Only GET, POST, PUT, PATCH, DELETE.
+- Swagger 2.0 files are refused: exit 1, nothing written, and the last line says `supplied spec is a different version (oas2)`. Convert the file to OpenAPI 3.0 first.
 - Schema `$ref`s must be `#/components/schemas/<Name>`. Any other `$ref` (e.g. a JSON pointer into `#/paths/...`, as in bundled specs) stops the run with exit 1 and one line naming the first one; nothing is written.
 - No `go.mod` is written: `./sdk/go` is meant to be a package inside your own module. To check it standalone: `cd sdk/go && go mod init example.com/sdk && go build ./...`.
 - Very large specs: the host (not the plugins) can run out of memory, see the table.
@@ -50,16 +59,18 @@ Measured against real specs, see the compile table in `experiments/openapi-sdk`.
 
 ## Results on real public files
 
-Of five public OpenAPI files we tried, one compiles as published. Measured on Linux x86_64, 1 vCPU, 2 GB RAM, about 1.2 GB free, 14 Nov 2026, on kalo-cli v0.2.0-agent.2 with recipe 0.1.1. Recipe 0.1.2 changed two things: a schema named `Client` becomes `ClientModel`, and a schema that would become `ClientModel` is renamed `ClientModelModel` (#9). Recipe 0.1.3 (current) changes two more, in both languages: a 200/201 response declared as an inline array of a `$ref` returns the typed list (`Promise<Note[]>`, `([]Note, error)`), and a response that wraps a `$ref` or an array of one in a `data` field returns that field instead of the whole body. Neither touches the Petstore output: it stays byte-identical to `testdata/golden` (CI, 18 Nov 2026). The six rows below were not re-run on 0.1.3. On 0.1.2 the Petstore output is byte-identical to `testdata/golden` (paste test, 16 Nov 2026). On 17 Nov 2026 all six rows were re-run on kalo-cli v0.2.0-agent.4 with recipe 0.1.2: same results. The Petstore output is byte-identical to `testdata/golden`, the Plaid output is byte-identical to what v0.2.0-agent.2 writes, and the other four files stop with the same message (the Stripe run with `--plugin-memory-mib 800` was not repeated). The 17 Nov re-run compared output and messages; the compile checks are from 14 Nov. Compile checks: TypeScript 7.0.2 and 5.9.3 (`tsc --strict --noEmit`) and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
+Of five public OpenAPI files we tried, one compiles as published. Every row below was re-run on 18 Nov 2026 on kalo-cli v0.2.0-agent.4 with recipe 0.1.3, which is what `kalo spec run openapi-sdk` fetches today. Machine: Linux x86_64, 1 vCPU, 2 GB RAM, fresh cache, default flags unless a row says otherwise. The last column gives each run's free memory at the start and, where the run printed it, the plugin memory limit. The limit is set from free memory, and a run that doesn't hit it doesn't print it. Compile checks: TypeScript 7.0.2 and 5.9.3 (`tsc --strict --noEmit`, `--moduleResolution bundler`) and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
 
-| File | Fetched from | sha256 | Result |
-|---|---|---|---|
-| Petstore (this recipe's fixture, not one of the five) | `testdata/openapi.yaml` | `cefaafa05eee75b1888762dea08a295f245e9f3e4bdb8777f4bdfed09e335339` | Compiles: `tsc --strict` and `go vet` clean. |
-| Plaid 2020-09-14.yml (351 operations, 3.3 MB) | raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml | `ef42469087e2c93242baaa8b83c90fb949f44d3dbae8ac0354d4bfd4cad2947d` | Compiles: `tsc --strict` and `go vet` clean. Second run byte-identical. |
-| apis.guru copy of the DigitalOcean 2.0 file | api.apis.guru/v2/specs/digitalocean.com/2.0/openapi.yaml | `2b7b040e296e92e40b5163e0bf90c3be95043ec4d27e193c491017614f69a54e` | Refused, exit 1, nothing written: its references point into `#/paths`. |
-| apis.guru copy of the SendGrid file | api.apis.guru/v2/specs/sendgrid.com/1.0.0/openapi.yaml | `4c655960ff9eaf02015e1d89bbf025b08cac0b44ecbb587094e459dde5369119` | Rejected before generation, exit 1, nothing written: "decode YAML: line 13002 has control character U+009F, which YAML does not allow (3 more after it)". |
-| GitHub REST api.github.com.json (14.3 MB) | raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json as of commit `4754642` (13 Nov 2026); `main` has changed since | `f7a3de68869181d34b232d88840d31f8157ade45cad1746eaab90cd3c801b31c` | Stopped, exit 1, nothing written: "ran out of memory at the 629 MiB plugin limit (set from free memory)"; 552 MiB on the 17 Nov run. |
-| Stripe spec3.json (8.3 MB) | raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json | `7cff4cc46d0654101a36a3302f7544640f5f73e4f3cad6f264f0e23c19fa1776` | Stopped, exit 1, nothing written: "ran out of memory at the 592 MiB plugin limit (set from free memory)"; 549 MiB on the 17 Nov run. With `--plugin-memory-mib 800` it stops on "infinite circular reference detected" instead. |
+History: first measured 14 Nov 2026 (v0.2.0-agent.2, recipe 0.1.1), then re-run 17 Nov 2026 (v0.2.0-agent.4, recipe 0.1.2). Each re-run gave the same results, except the Stripe row (see that row). Recipe 0.1.2 changed two things: a schema named `Client` becomes `ClientModel`, and a schema that would become `ClientModel` is renamed `ClientModelModel` (#9). Recipe 0.1.3 changed two more, in both languages. A 200/201 response declared as an inline array of a `$ref` returns the typed list (`Promise<Note[]>`, `([]Note, error)`). A response that wraps a `$ref`, or an array of one, in a `data` field returns that field instead of the whole body. Neither touches the Petstore output, which stays byte-identical to `testdata/golden` (CI, 18 Nov 2026).
+
+| File | Fetched from | sha256 | Result | Run (18 Nov 2026, v0.2.0-agent.4, recipe 0.1.3) |
+|---|---|---|---|---|
+| Petstore (this recipe's fixture, not one of the five) | `testdata/openapi.yaml` | `cefaafa05eee75b1888762dea08a295f245e9f3e4bdb8777f4bdfed09e335339` | Compiles: `tsc --strict` and `go vet` clean. | Peak 343 MiB, limit not reached. |
+| Plaid 2020-09-14.yml (351 operations, 3.3 MB) | raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml | `ef42469087e2c93242baaa8b83c90fb949f44d3dbae8ac0354d4bfd4cad2947d` | Compiles: `tsc --strict` and `go vet` clean. Second run byte-identical. | Three runs: 1,281 MiB free on the last, peak 563 MiB (533 and 567 MiB on the other two), limit not reached. |
+| apis.guru copy of the DigitalOcean 2.0 file | api.apis.guru/v2/specs/digitalocean.com/2.0/openapi.yaml | `2b7b040e296e92e40b5163e0bf90c3be95043ec4d27e193c491017614f69a54e` | Refused, exit 1, nothing written: its references point into `#/paths`. | 1,147 MiB free, peak 272 MiB, stops before the limit matters. |
+| apis.guru copy of the SendGrid file | api.apis.guru/v2/specs/sendgrid.com/1.0.0/openapi.yaml | `4c655960ff9eaf02015e1d89bbf025b08cac0b44ecbb587094e459dde5369119` | Rejected before generation, exit 1, nothing written: "decode YAML: line 13002 has control character U+009F, which YAML does not allow (3 more after it)". | 1,208 MiB free, peak 59 MiB, stops before the limit matters. |
+| GitHub REST api.github.com.json (14.3 MB) | raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json as of commit `4754642` (13 Nov 2026); `main` has changed since | `f7a3de68869181d34b232d88840d31f8157ade45cad1746eaab90cd3c801b31c` | Stopped, exit 1, nothing written: "ran out of memory at the 746 MiB plugin limit (set from free memory)" on 18 Nov. Same stop at 629 MiB (14 Nov) and 552 MiB (17 Nov). | 1,231 MiB free, **746 MiB limit** (out of memory), peak 846 MiB. |
+| Stripe spec3.json (8.3 MB) | raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json | `7cff4cc46d0654101a36a3302f7544640f5f73e4f3cad6f264f0e23c19fa1776` | Stopped, exit 1, nothing written. With about 1,270 MiB free (18 Nov) it stops on "infinite circular reference detected: payment_intent: payment_intent -> api_errors -> payment_intent", with default flags and again with `--plugin-memory-mib 800`. With less free memory it runs out of memory first: at a 592 MiB limit on 14 Nov and 549 MiB on 17 Nov (about 1,050 MiB free). | 1,267 MiB free, default flags, peak 883 MiB: circular reference, not out of memory. |
 
 The DigitalOcean and SendGrid files are apis.guru copies; the results describe the files as fetched, not the vendors' own versions. The DigitalOcean copy was the last file added, after we scanned candidates for control characters.
 
@@ -71,7 +82,7 @@ SDK generation failed: unsupported $ref "#/paths/~1v2~11-clicks/get/responses/40
 
 ### Memory
 
-Plaid (3.3 MB): the whole `kalo` process peaked at 641 MiB (about 670 MB); the plugin's own memory, which the limit applies to, is part of that. The plugin memory limit is set from the memory that is free when the run starts (here about 600 MiB with about 1.2 GB free); `--plugin-memory-mib` raises it. The limit is not a fixed number: for the GitHub and Stripe files it was 629 and 592 MiB on 14 Nov (v0.2.0-agent.2) and 552 and 549 MiB on 17 Nov (v0.2.0-agent.4, about 1,050 MiB free). We have not run the GitHub or Stripe file on a larger machine. On 14 Nov: one run per file on one machine (Plaid: two; Stripe: a first run with less memory free stopped the same way at a lower limit).
+Plaid (3.3 MB): the whole `kalo` process peaked at 641 MiB (about 670 MB); the plugin's own memory, which the limit applies to, is part of that. The plugin memory limit is set from the memory that is free when the run starts (here about 600 MiB with about 1.2 GB free); `--plugin-memory-mib` raises it. The limit is not a fixed number: for the GitHub and Stripe files it was 629 and 592 MiB on 14 Nov (v0.2.0-agent.2) and 552 and 549 MiB on 17 Nov (v0.2.0-agent.4, about 1,050 MiB free). On 18 Nov (v0.2.0-agent.4, recipe 0.1.3, about 1,230 to 1,270 MiB free) GitHub stopped at a 746 MiB limit. Stripe did not reach its limit and stopped on the circular reference. We have not run the GitHub or Stripe file on a larger machine. On 14 Nov: one run per file on one machine (Plaid: two; Stripe: a first run with less memory free stopped the same way at a lower limit).
 
 ### Output notes
 

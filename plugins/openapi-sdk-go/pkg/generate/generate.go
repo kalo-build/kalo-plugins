@@ -220,6 +220,15 @@ func extractMediaTypeSchemaFromContent(content *orderedmap.Map[string, *v3.Media
 }
 
 func convertSchemaProxy(proxy *base.SchemaProxy) Schema {
+	return convertSchemaProxyIn(proxy, map[string]bool{})
+}
+
+// convertSchemaProxyIn converts a schema, tracking the $refs on the current path in
+// visiting. A $ref already on the path is a cycle (a tree's parent / children, comment
+// replies): it gets a shallow schema (type, format, readOnly) instead of being expanded
+// again, which is all the generators read from a $ref'd schema. Acyclic specs convert
+// exactly as before.
+func convertSchemaProxyIn(proxy *base.SchemaProxy, visiting map[string]bool) Schema {
 	if proxy == nil {
 		return Schema{}
 	}
@@ -227,10 +236,25 @@ func convertSchemaProxy(proxy *base.SchemaProxy) Schema {
 	if resolved == nil {
 		return Schema{}
 	}
-	return convertSchema(resolved)
+	if ref := proxy.GetReference(); ref != "" {
+		if visiting[ref] {
+			return shallowSchema(resolved)
+		}
+		visiting[ref] = true
+		defer delete(visiting, ref)
+	}
+	return convertSchemaIn(resolved, visiting)
 }
 
-func convertSchema(s *base.Schema) Schema {
+func shallowSchema(s *base.Schema) Schema {
+	schema := Schema{Types: s.Type, Format: s.Format, Required: make(map[string]bool)}
+	if s.ReadOnly != nil {
+		schema.ReadOnly = *s.ReadOnly
+	}
+	return schema
+}
+
+func convertSchemaIn(s *base.Schema, visiting map[string]bool) Schema {
 	schema := Schema{
 		Types:    s.Type,
 		Format:   s.Format,
@@ -253,7 +277,7 @@ func convertSchema(s *base.Schema) Schema {
 			np := NamedProperty{Name: propName}
 			if propProxy != nil {
 				np.Ref = propProxy.GetReference()
-				np.Schema = convertSchemaProxy(propProxy)
+				np.Schema = convertSchemaProxyIn(propProxy, visiting)
 			}
 			schema.Properties = append(schema.Properties, np)
 		}
@@ -264,7 +288,7 @@ func convertSchema(s *base.Schema) Schema {
 
 	if s.Items != nil && s.Items.A != nil {
 		itemRef := s.Items.A.GetReference()
-		itemSchema := convertSchemaProxy(s.Items.A)
+		itemSchema := convertSchemaProxyIn(s.Items.A, visiting)
 		schema.Items = &SchemaRef{Ref: itemRef, Schema: &itemSchema}
 	}
 

@@ -1,0 +1,24 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Org", "version": "1.0.0" },
+  "paths": {
+    "/nodes/{id}": {
+      "get": {
+        "operationId": "getNode",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/OrgNode" } } } } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OrgNode": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "manager": { "allOf": [{ "$ref": "#/components/schemas/OrgNode" }] }
+        }
+      }
+    }
+  }
+}

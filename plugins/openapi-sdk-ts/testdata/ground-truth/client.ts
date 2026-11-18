@@ -31,7 +31,7 @@ export class Client {
       const body = await resp.text();
       throw new ApiError(resp.status, body);
     }
-    return resp.json() as Promise<Company[]>;
+    return ((await resp.json()) as { data: Company[] }).data;
   }
 
   async createCompany(body: CompanyCreate): Promise<Company> {

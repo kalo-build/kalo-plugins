@@ -1,0 +1,33 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Posts", "version": "1.0.0" },
+  "paths": {
+    "/posts/{id}": {
+      "get": {
+        "operationId": "getPost",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Post" } } } } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "comments": { "type": "array", "items": { "$ref": "#/components/schemas/Comment" } }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "body": { "type": "string" },
+          "post": { "$ref": "#/components/schemas/Post" }
+        }
+      }
+    }
+  }
+}

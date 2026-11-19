@@ -1,0 +1,380 @@
+{
+  "task_id": "hq-78",
+  "series": "D",
+  "profile": "code-change",
+  "query": "One-wasm openapi-sdk recipe (0.2.0): build to LGTM against bars; no merge, no tag",
+  "status": "packed",
+  "created_at": "2026-11-19T09:05:03Z",
+  "updated_at": "2026-11-19T09:17:25Z",
+  "repo_root": "/data/workspaces/eng_head/kalo-plugins",
+  "workspace": "/data/workspaces/eng_head/kalo-plugins/devspecs/tasks/hq-78",
+  "artifacts": {
+    "series": "D",
+    "index": "D00-index.md",
+    "first_slice": "D01-one-wasm-openapi-sdk-recipe-0-2-0-build-to-lgtm-against-bars-no-plan.md",
+    "result": "D01-one-wasm-openapi-sdk-recipe-0-2-0-build-to-lgtm-against-bars-no-result.md",
+    "slices": [
+      {
+        "id": "D01",
+        "title": "One-wasm openapi-sdk recipe (0.2.0): build to LGTM against bars; no merge, no tag",
+        "plan": "D01-one-wasm-openapi-sdk-recipe-0-2-0-build-to-lgtm-against-bars-no-plan.md",
+        "result": "D01-one-wasm-openapi-sdk-recipe-0-2-0-build-to-lgtm-against-bars-no-result.md",
+        "kind": "slice",
+        "stage": "validated",
+        "decision": "promote",
+        "updated_at": "2026-11-19T09:17:25Z",
+        "latest_checkpoint_id": "cp_20261119T091725Z_d01_validated",
+        "latest_checkpoint": "checkpoints/20261119-091725-validated.md",
+        "latest_checkpoint_json": "checkpoints/20261119-091725-validated.json"
+      }
+    ]
+  },
+  "predicted_context": {
+    "relevant_areas": [
+      "plugins",
+      "scripts"
+    ],
+    "primary_files": [
+      {
+        "path": "scripts/stage-recipe.sh",
+        "title": "scripts/stage-recipe.sh",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "anchor-first ranking: score 24.000; matches openapi-sdk, openapisdk, recipe; fields body, path, title",
+          "query term match in path: recipe",
+          "query term match in path: tag"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/client.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/client.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk",
+          "query term match in path: sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/generate.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk",
+          "query term match in path: sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/client.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/client.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/types.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/types.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk",
+          "scout source preservation: query roots opena,openapi,sdk; source-manifest candidate",
+          "bounded body evidence: build=2, one=2, tag=3; bytes=3287"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/types.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/types.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/generate.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_test_reservation",
+          "pack tier: related (reserved manifest test with direct query evidence)",
+          "query term match in path: openapi"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/linear_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/linear_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_test_reservation",
+          "pack tier: related (reserved manifest test with direct query evidence)",
+          "query term match in path: openapi"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/refs_test.go#L14",
+        "title": "TestUnsupportedRef_FailsWithOneLine",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_relationship_recovery",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/refs_test.go#L14",
+        "title": "TestUnsupportedRef_FailsWithOneLine",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_relationship_recovery",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L18",
+        "title": "TestGenerateSDK_Full",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "scripts/test-recipe.sh",
+        "title": "scripts/test-recipe.sh",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_relationship_recovery",
+          "query term match in path: recipe",
+          "query term match in body: against"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/selfref_test.go#L32",
+        "title": "TestSelfRef_OptionalDirect",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_relationship_recovery",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L18",
+        "title": "TestGenerateSDK_Full",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      }
+    ],
+    "noise_risks": [
+      {
+        "path": "recipes/openapi-sdk/testdata/golden/ts/types.ts",
+        "title": "recipes/openapi-sdk/testdata/golden/ts/types.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "anchor-first ranking: score 24.000; matches openapi-sdk, openapisdk; fields path",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "recipes/openapi-sdk/testdata/golden/ts/client.ts",
+        "title": "recipes/openapi-sdk/testdata/golden/ts/client.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "anchor-first ranking: score 24.000; matches openapi-sdk, openapisdk; fields path",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      },
+      {
+        "path": "recipes/openapi-sdk/testdata/golden/ts/index.ts",
+        "title": "recipes/openapi-sdk/testdata/golden/ts/index.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "anchor-first ranking: score 24.000; matches openapi-sdk, openapisdk; fields path",
+          "query term match in path: openapi",
+          "query term match in path: openapi-sdk"
+        ]
+      }
+    ],
+    "related_git_receipts": [
+      {
+        "sha": "4573f5832b4a330ca2639e5d777fb98995aca30d",
+        "short_sha": "4573f58",
+        "committed_at": "2026-11-14",
+        "subject": "openapi-sdk-ts/go: type aliases for non-object schemas, identifier sanitising, edge fixture + goldens",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/client.go",
+          "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+          "plugins/openapi-sdk-go/pkg/generate/types.go"
+        ],
+        "matched_terms": [
+          "openapi-sdk"
+        ],
+        "signals": [
+          "touched 5 packed path(s)",
+          "matched query anchors",
+          "cross-file change"
+        ]
+      },
+      {
+        "sha": "d99d1b4d74bd242b79480346d8bdf169e74abc99",
+        "short_sha": "d99d1b4",
+        "committed_at": "2026-11-14",
+        "subject": "chore: monorepo layout; move plugin-openapi-sdk-ts in as plugins/openapi-sdk-ts (#1)",
+        "matched_paths": [
+          "plugins/openapi-sdk-ts/pkg/generate/client.go",
+          "plugins/openapi-sdk-ts/pkg/generate/generate.go",
+          "plugins/openapi-sdk-ts/pkg/generate/types.go"
+        ],
+        "matched_terms": [
+          "openapi-sdk",
+          "recipe"
+        ],
+        "signals": [
+          "touched 3 packed path(s)",
+          "matched query anchors",
+          "PR/issue reference",
+          "cross-file change"
+        ]
+      },
+      {
+        "sha": "c5e1c0fd42247b22ee69d41ef9863a0f7254cbb6",
+        "short_sha": "c5e1c0f",
+        "committed_at": "2026-11-18",
+        "subject": "openapi-sdk-ts/go: optional self-reference generates instead of recursing (hq-74)",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/generate.go",
+          "plugins/openapi-sdk-ts/pkg/generate/generate.go"
+        ],
+        "matched_terms": [
+          "openapi-sdk",
+          "recipe"
+        ],
+        "signals": [
+          "touched 2 packed path(s)",
+          "matched query anchors",
+          "PR/issue reference",
+          "cross-file change"
+        ]
+      }
+    ]
+  },
+  "freshness_warnings": [
+    {
+      "path": "recipes/openapi-sdk/README.md",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/bindings/go-sdk.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/bindings/openapi.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/bindings/ts-sdk.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/contracts/go-sdk.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/contracts/openapi.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/contracts/ts-sdk.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    },
+    {
+      "path": "recipes/openapi-sdk/descriptors/implementations/go.yaml",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+    }
+  ],
+  "risk_cards": [
+    {
+      "id": "stale-index",
+      "title": "On-disk paths matched the task but were not indexed",
+      "severity": "medium",
+      "source": "freshness",
+      "evidence": [
+        "`recipes/openapi-sdk/README.md` - on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe",
+        "`recipes/openapi-sdk/descriptors/bindings/go-sdk.yaml` - on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe",
+        "`recipes/openapi-sdk/descriptors/bindings/openapi.yaml` - on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe",
+        "`recipes/openapi-sdk/descriptors/bindings/ts-sdk.yaml` - on-disk path matched task terms but was not in the indexed candidate set: openapi, sdk, recipe"
+      ],
+      "agent_check": "Inspect the warned files or refresh the index before trusting missing context.",
+      "count": 8
+    }
+  ],
+  "confidence": {
+    "primary_file_confidence": "high",
+    "test_coverage_confidence": "high",
+    "docs_config_confidence": "low",
+    "git_receipt_confidence": "high",
+    "noise_risk": "high",
+    "pack_completeness": "low",
+    "why": [
+      "found 7 likely primary file(s)",
+      "found 8 likely test file(s)",
+      "found 3 related Git receipt(s)",
+      "3 file(s) were downgraded as likely noise"
+    ],
+    "agent_instruction": "Validate the test and integration surface before editing. Record critical misses and distracting inclusions in the slice result or a task checkpoint."
+  },
+  "durability": {}
+}

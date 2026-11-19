@@ -1,6 +1,7 @@
 go 1.24.2
 
 use (
+	./plugins/openapi-sdk
 	./plugins/openapi-sdk-go
 	./plugins/openapi-sdk-ts
 )

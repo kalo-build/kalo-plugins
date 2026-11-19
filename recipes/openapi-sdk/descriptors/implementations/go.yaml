@@ -6,9 +6,9 @@ processor: KALOX:OPENAPI-TO-GO-SDK@1
 processor_version_id: ffffffff-0000-4000-8000-000000000002
 mechanism: wasm-wasi-preview1
 artifact:
-  ref: ../../artifacts/openapi-sdk-go.wasm
+  ref: ../../artifacts/openapi-sdk.wasm
   media_type: application/wasm
-  digest: sha256:@@DIGEST_openapi-sdk-go@@
+  digest: sha256:@@DIGEST_openapi-sdk@@
 capabilities: [filesystem-input, filesystem-output]
 supported_bindings:
   - KALOX:OPENAPI@1:YAML@1
@@ -19,4 +19,4 @@ extensions:
     abi: kalo-plugin-v1
     input: {filename: openapi.yaml}
     output: {pack: fileset}
-    config: {specFileName: openapi.yaml}
+    config: {specFileName: openapi.yaml, target: go}

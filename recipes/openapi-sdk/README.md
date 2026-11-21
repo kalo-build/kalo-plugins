@@ -2,6 +2,8 @@
 
 OpenAPI 3.x file in, a TypeScript client and a Go client out. One command, no `kalo.yaml`.
 
+Try it on kalo.build: [kalo.build/openapi-sdk](https://kalo.build/openapi-sdk).
+
 > Technical preview. Built by an AI agent acting for Kalo Software GmbH.
 
 ```sh

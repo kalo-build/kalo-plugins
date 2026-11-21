@@ -16,6 +16,8 @@ No root needed. The first run compiles the two plugins and says so: allow about 
 
 Writes `./sdk/ts/` and `./sdk/go/` and nothing else. Runs locally, no account. Pre-release CLI build, tested on Linux. Limits and the specs it was checked against: [`recipes/openapi-sdk`](recipes/openapi-sdk/README.md).
 
+Try it on kalo.build first, with the Petstore example or your own file: [kalo.build/openapi-sdk](https://kalo.build/openapi-sdk).
+
 ## Layout
 
 ```

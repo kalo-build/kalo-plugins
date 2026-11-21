@@ -1,0 +1,302 @@
+{
+  "task_id": "hq-59",
+  "series": "B",
+  "profile": "code-change",
+  "query": "Prepare, don't merge: kalo-cli README (reach §2c) and page links in the kalo-plugins READMEs, as held PRs for \"A: merged\"",
+  "status": "packed",
+  "created_at": "2026-11-17T15:42:03Z",
+  "updated_at": "2026-11-17T15:42:24Z",
+  "repo_root": "/tmp/kp",
+  "workspace": "/tmp/kp/devspecs/tasks/hq-59",
+  "artifacts": {
+    "series": "B",
+    "index": "B00-index.md",
+    "first_slice": "B01-prepare-don-t-merge-kalo-cli-readme-reach-2c-and-page-links-in-plan.md",
+    "result": "B01-prepare-don-t-merge-kalo-cli-readme-reach-2c-and-page-links-in-result.md",
+    "slices": [
+      {
+        "id": "B01",
+        "title": "Prepare, don't merge: kalo-cli README (reach §2c) and page links in the kalo-plugins READMEs, as held PRs for \"A: merged\"",
+        "plan": "B01-prepare-don-t-merge-kalo-cli-readme-reach-2c-and-page-links-in-plan.md",
+        "result": "B01-prepare-don-t-merge-kalo-cli-readme-reach-2c-and-page-links-in-result.md",
+        "kind": "slice",
+        "stage": "validated",
+        "decision": "promote",
+        "updated_at": "2026-11-17T15:42:24Z",
+        "latest_checkpoint_id": "cp_20261117T154224Z_b01_validated",
+        "latest_checkpoint": "checkpoints/20261117-154224-validated.md",
+        "latest_checkpoint_json": "checkpoints/20261117-154224-validated.json"
+      }
+    ]
+  },
+  "predicted_context": {
+    "relevant_areas": [
+      "plugins",
+      "scripts"
+    ],
+    "primary_files": [
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/client.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/client.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: cli",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/client.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/client.go",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: cli",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/generate.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: plugins",
+          "query term match in body: cli",
+          "scout source preservation: query roots plugi,plugin,plugins; loss-safe source candidate",
+          "bounded body evidence: cli=10, don=3; bytes=6476"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate.go",
+        "title": "plugins/openapi-sdk-ts/pkg/generate/generate.go (go)",
+        "kind": "source_context",
+        "role": "implementation_surface",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: plugins",
+          "query term match in body: cli",
+          "scout source preservation: query roots plugi,plugin,plugins; loss-safe source candidate",
+          "bounded body evidence: cli=13, don=3; bytes=6763"
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "path": "scripts/test-recipe.sh",
+        "title": "scripts/test-recipe.sh",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in body: cli",
+          "query term match in body: kalo",
+          "identifier/body match: kalo-cli"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/shapes_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/shapes_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "query term match in path: plugins",
+          "query term match in body: cli",
+          "query term match in body: kalo"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/compile_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/compile_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_test_reservation",
+          "pack tier: related (reserved manifest test with direct query evidence)",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+        "title": "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_test_reservation",
+          "pack tier: related (reserved manifest test with direct query evidence)",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-go/pkg/generate/generate_test.go#L18",
+        "title": "TestGenerateSDK_Full",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: plugins",
+          "query term match in body: cli"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/pkg/generate/generate_test.go#L18",
+        "title": "TestGenerateSDK_Full",
+        "kind": "source_context",
+        "subtype": "test_case",
+        "role": "behavior_tests",
+        "evidence": [
+          "relationship expansion: source_manifest_loss_safe_preserved",
+          "query term match in path: plugins",
+          "query term match in body: cli"
+        ]
+      }
+    ],
+    "noise_risks": [
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/edge-ground-truth/client.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/edge-ground-truth/client.ts",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "query term match in path: cli",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/ground-truth/client.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/ground-truth/client.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: cli",
+          "query term match in path: plugins"
+        ]
+      },
+      {
+        "path": "plugins/openapi-sdk-ts/testdata/shapes-ground-truth/client.ts",
+        "title": "plugins/openapi-sdk-ts/testdata/shapes-ground-truth/client.ts (typescript)",
+        "kind": "source_context",
+        "role": "excluded_noise",
+        "evidence": [
+          "relationship expansion: source_manifest_family_recovery",
+          "query term match in path: cli",
+          "query term match in path: plugins"
+        ]
+      }
+    ],
+    "related_git_receipts": [
+      {
+        "sha": "5d39ace4cf957fe11eb327160c21cb576c3f8aa7",
+        "short_sha": "5d39ace",
+        "committed_at": "2026-11-14",
+        "subject": "openapi-sdk-ts/go: ApiError clash, required-before-optional params, only used Go imports, OpenAPI 3.1 warning (experi...",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/client.go",
+          "plugins/openapi-sdk-go/pkg/generate/generate.go",
+          "plugins/openapi-sdk-go/pkg/generate/shapes_test.go"
+        ],
+        "matched_terms": [
+          "t",
+          "in",
+          "a"
+        ],
+        "signals": [
+          "touched 5 packed path(s)",
+          "matched query anchors",
+          "cross-file change"
+        ]
+      },
+      {
+        "sha": "4b674dead5a4f576ea2fecbf7404cd64c5caf994",
+        "short_sha": "4b674de",
+        "committed_at": "2026-11-14",
+        "subject": "chore: move plugin-openapi-sdk-go in as plugins/openapi-sdk-go",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/client.go",
+          "plugins/openapi-sdk-go/pkg/generate/compile_test.go",
+          "plugins/openapi-sdk-go/pkg/generate/generate.go"
+        ],
+        "matched_terms": [
+          "readme",
+          "t",
+          "in",
+          "a"
+        ],
+        "signals": [
+          "touched 3 packed path(s)",
+          "matched query anchors",
+          "cross-file change"
+        ]
+      },
+      {
+        "sha": "4573f5832b4a330ca2639e5d777fb98995aca30d",
+        "short_sha": "4573f58",
+        "committed_at": "2026-11-14",
+        "subject": "openapi-sdk-ts/go: type aliases for non-object schemas, identifier sanitising, edge fixture + goldens",
+        "matched_paths": [
+          "plugins/openapi-sdk-go/pkg/generate/client.go",
+          "plugins/openapi-sdk-go/pkg/generate/edge_test.go",
+          "plugins/openapi-sdk-ts/pkg/generate/client.go"
+        ],
+        "matched_terms": [
+          "t",
+          "in",
+          "a"
+        ],
+        "signals": [
+          "touched 3 packed path(s)",
+          "matched query anchors",
+          "cross-file change"
+        ]
+      }
+    ]
+  },
+  "freshness_warnings": [
+    {
+      "path": "plugins/openapi-sdk-go/README.md",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: readme, plugins"
+    },
+    {
+      "path": "plugins/openapi-sdk-ts/README.md",
+      "reason": "on-disk path matched task terms but was not in the indexed candidate set: readme, plugins"
+    }
+  ],
+  "risk_cards": [
+    {
+      "id": "stale-index",
+      "title": "On-disk paths matched the task but were not indexed",
+      "severity": "medium",
+      "source": "freshness",
+      "evidence": [
+        "`plugins/openapi-sdk-go/README.md` - on-disk path matched task terms but was not in the indexed candidate set: readme, plugins",
+        "`plugins/openapi-sdk-ts/README.md` - on-disk path matched task terms but was not in the indexed candidate set: readme, plugins"
+      ],
+      "agent_check": "Inspect the warned files or refresh the index before trusting missing context.",
+      "count": 2
+    }
+  ],
+  "confidence": {
+    "primary_file_confidence": "high",
+    "test_coverage_confidence": "high",
+    "docs_config_confidence": "low",
+    "git_receipt_confidence": "high",
+    "noise_risk": "high",
+    "pack_completeness": "low",
+    "why": [
+      "found 4 likely primary file(s)",
+      "found 6 likely test file(s)",
+      "found 3 related Git receipt(s)",
+      "3 file(s) were downgraded as likely noise"
+    ],
+    "agent_instruction": "Validate the test and integration surface before editing. Record critical misses and distracting inclusions in the slice result or a task checkpoint."
+  },
+  "durability": {}
+}

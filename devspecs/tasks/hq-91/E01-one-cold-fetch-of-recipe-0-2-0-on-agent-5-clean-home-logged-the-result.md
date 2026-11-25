@@ -48,3 +48,18 @@
   - `recipes/openapi-sdk/README.md`
 - Tests run:
   - `git diff: README-only; figures checked against task 91 note, fetch log row 1, recipe tarball (one 21.8 MB wasm)`
+
+### Checkpoint
+- Created At: 2026-11-25T09:11:29Z
+- Stage: validated
+- Decision: complete
+- Source: `checkpoints/20261125-091129-validated.md`
+- Structured Evidence: `checkpoints/20261125-091129-validated.json`
+- What changed: -
+- Evidence for decision: 1 file(s) edited; 1 test command(s)
+- What remains: -
+- Next iteration: -
+- Files edited:
+  - `recipes/openapi-sdk/README.md`
+- Tests run:
+  - `README-only: numbers match /tmp/c79.N8ly/run.log and /tmp/p79.log (reads P, R); no code changed`

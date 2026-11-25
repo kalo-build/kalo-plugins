@@ -5,7 +5,7 @@
   "query": "One cold fetch of recipe 0.2.0 on agent.5 (clean HOME), logged the same wake; figures for the FILL commit and the recipe README",
   "status": "packed",
   "created_at": "2026-11-25T08:52:20Z",
-  "updated_at": "2026-11-25T08:53:03Z",
+  "updated_at": "2026-11-25T09:11:29Z",
   "repo_root": "/data/workspaces/eng1/src/kalo-plugins",
   "workspace": "/data/workspaces/eng1/src/kalo-plugins/devspecs/tasks/hq-91",
   "artifacts": {
@@ -22,10 +22,10 @@
         "kind": "slice",
         "stage": "validated",
         "decision": "complete",
-        "updated_at": "2026-11-25T08:53:03Z",
-        "latest_checkpoint_id": "cp_20261125T085303Z_e01_validated",
-        "latest_checkpoint": "checkpoints/20261125-085303-validated.md",
-        "latest_checkpoint_json": "checkpoints/20261125-085303-validated.json"
+        "updated_at": "2026-11-25T09:11:29Z",
+        "latest_checkpoint_id": "cp_20261125T091129Z_e01_validated",
+        "latest_checkpoint": "checkpoints/20261125-091129-validated.md",
+        "latest_checkpoint_json": "checkpoints/20261125-091129-validated.json"
       }
     ]
   },

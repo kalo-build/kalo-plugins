@@ -42,5 +42,6 @@ WASM files land in `dist/wasm/`.
 |---|---|---|
 | [`openapi-sdk-ts`](plugins/openapi-sdk-ts) | OpenAPI 3.1 YAML → typed TypeScript HTTP client | `kalo-build/plugin-openapi-sdk-ts@7d36150` |
 | [`openapi-sdk-go`](plugins/openapi-sdk-go) | OpenAPI 3.1 YAML → typed Go HTTP client | `kalo-build/plugin-openapi-sdk-go@d177032` |
+| [`openapi-sdk`](plugins/openapi-sdk) | Both generators above in one wasm (`target: ts\|go`); the artifact the openapi-sdk recipe ships from 0.2.0 | this repo |
 
 Adding a plugin or a recipe: [CONTRIBUTING.md](CONTRIBUTING.md). Licence: MIT.

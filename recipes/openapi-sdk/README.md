@@ -12,20 +12,20 @@ kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
 ## Install (pre-release CLI, tested on Linux)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.4 KALO_INSTALL_DIR="$HOME/.local/bin" sh
+curl -fsSL https://raw.githubusercontent.com/kalo-build/kalo-cli/agent-main/install.sh | KALO_VERSION=v0.2.0-agent.5 KALO_INSTALL_DIR="$HOME/.local/bin" sh
 export PATH="$HOME/.local/bin:$PATH"
 kalo spec run openapi-sdk --input ./openapi.yaml --out ./sdk
 ```
 
-No root needed. The first run compiles the two plugins and says so: allow about a minute on a small file. After that a run takes a few seconds.
+No root needed. The first run fetches the recipe, compiles its plugin and says so: about 15 seconds for Petstore on the machine below. After that a run takes about 2 seconds.
 
-What it leaves on disk (measured 18 Nov 2026, Linux x86_64, 1 vCPU, 2 GB RAM, kalo-cli v0.2.0-agent.4, recipe 0.1.3, Petstore, clean `$HOME`): 210.8 MB for 5.7 KB of output (five files). 15.4 MB is the binary (`~/.local/bin/kalo`), 42.1 MB the recipe cache (the two plugin WASM files and their descriptors, `~/.cache/kalo/recipes`) and 153.3 MB the compiled plugins (`~/.cache/kalo/wazero`, which is what makes later runs take seconds). The download is 5,556,471 bytes for the CLI tarball (`linux_x86_64`) and 8,648,297 bytes for the recipe tarball. To remove all of it:
+What it leaves on disk (one cold run, measured 25 Nov 2026, Linux x86_64, 1 vCPU, 2 GB RAM, kalo-cli v0.2.0-agent.5, recipe 0.2.0, Petstore, clean `$HOME`): the CLI prints `cached 36 MB in ~/.cache/kalo (plugins 22 MB, compiled code 14 MB)`. That is 22 MB for the recipe cache (`~/.cache/kalo/recipes`: the plugin WASM file and the descriptors) and 14 MB for the compiled plugin (`~/.cache/kalo/compiled`, which is what makes later runs take seconds), plus 15.5 MB for the binary (`~/.local/bin/kalo`). `du -sh ~/.cache/kalo` rounds to 35M, one MB below the CLI's line; both are the same 35.6 MB of files. The download is 5,590,373 bytes for the CLI tarball (`linux_x86_64`) and 4,498,169 bytes for the recipe tarball, 10.1 MB together (sizes of the release assets, not measured on the wire). Install took 0.82 s, the first run 14.18 s, the second 1.75 s. One run each, one machine. To remove all of it:
 
 ```sh
 rm -rf ~/.local/bin/kalo ~/.cache/kalo
 ```
 
-If `XDG_CACHE_HOME` is set, the caches are in `$XDG_CACHE_HOME/kalo` instead. `KALO_CACHE_DIR` moves them. `KALO_NO_COMPILE_CACHE=1` skips the 153.3 MB, but then every run compiles the plugins again.
+If `XDG_CACHE_HOME` is set, the caches are in `$XDG_CACHE_HOME/kalo` instead. `KALO_CACHE_DIR` moves them. `KALO_NO_COMPILE_CACHE=1` keeps the compiled code off disk, but then every run compiles the plugin again.
 
 ### From a checkout (contributors, needs Go 1.24+)
 
@@ -59,7 +59,7 @@ Measured against real specs, see the compile table in `experiments/openapi-sdk`.
 
 ## Results on real public files
 
-Of five public OpenAPI files we tried, one compiles as published. Every row below was re-run on 18 Nov 2026 on kalo-cli v0.2.0-agent.4 with recipe 0.1.3, which is what `kalo spec run openapi-sdk` fetches today. Machine: Linux x86_64, 1 vCPU, 2 GB RAM, fresh cache, default flags unless a row says otherwise. The last column gives each run's free memory at the start and, where the run printed it, the plugin memory limit. The limit is set from free memory, and a run that doesn't hit it doesn't print it. Compile checks: `tsc --strict --noEmit` with TypeScript 5.9.3 and `--moduleResolution node` (Petstore, Plaid), with TypeScript 7.0.2 and `--moduleResolution bundler` (Petstore, Plaid; TypeScript 7 removed `node`), and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
+Of five public OpenAPI files we tried, one compiles as published. Every row below was re-run on 18 Nov 2026 on kalo-cli v0.2.0-agent.4 with recipe 0.1.3. Recipe 0.2.0 (25 Nov 2026) has not re-run these rows; its Petstore output is byte-identical to `testdata/golden`, and the 0.2.0 numbers above are from that one Petstore run. Machine: Linux x86_64, 1 vCPU, 2 GB RAM, fresh cache, default flags unless a row says otherwise. The last column gives each run's free memory at the start and, where the run printed it, the plugin memory limit. The limit is set from free memory, and a run that doesn't hit it doesn't print it. Compile checks: `tsc --strict --noEmit` with TypeScript 5.9.3 and `--moduleResolution node` (Petstore, Plaid), with TypeScript 7.0.2 and `--moduleResolution bundler` (Petstore, Plaid; TypeScript 7 removed `node`), and `go vet`. Hashes are of the files as fetched on 14 Nov 2026. Linux only: no macOS or Windows run.
 
 History: first measured 14 Nov 2026 (v0.2.0-agent.2, recipe 0.1.1), then re-run 17 Nov 2026 (v0.2.0-agent.4, recipe 0.1.2). Each re-run gave the same results, except the Stripe row (see that row). Recipe 0.1.2 changed two things: a schema named `Client` becomes `ClientModel`, and a schema that would become `ClientModel` is renamed `ClientModelModel` (#9). Recipe 0.1.3 changed two more, in both languages. A 200/201 response declared as an inline array of a `$ref` returns the typed list (`Promise<Note[]>`, `([]Note, error)`). A response that wraps a `$ref`, or an array of one, in a `data` field returns that field instead of the whole body. Neither touches the Petstore output, which stays byte-identical to `testdata/golden` (CI, 18 Nov 2026).
 
